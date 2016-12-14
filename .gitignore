@@ -1,0 +1,8 @@
+test/sandbox.py
+.idea/
+*.pyc
+build/
+dist/
+orange_datasharte.egg-info/
+
+

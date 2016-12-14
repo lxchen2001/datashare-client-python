@@ -1,0 +1,12 @@
+[
+  {
+    "battery": 0,
+    "id": {
+      "instance": "instance",
+      "model": "model"
+    },
+    "error": "NONE",
+    "niceName": "my first object",
+    "parentId": null
+  }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "device": {
+            "id": 0,
+            "links": {},
+            "udi": "carpetcorp:icarpet3@02:00:00:12:e8:d2"
+        },
+        "result": {
+            "code": 0,
+            "description": "The requested resource [7893] doesn't exist.",
+            "message": "ResourceNotFound"
+        }
+    }
+]

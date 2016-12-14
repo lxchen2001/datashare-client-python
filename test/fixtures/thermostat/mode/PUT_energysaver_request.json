@@ -1,0 +1,12 @@
+{
+  "params": {
+    "endDate": null,
+    "temperature": 19.0,
+    "type": "energysaver"
+  },
+  "target": {
+    "byUdi": [
+      "thermostat-udi"
+    ]
+  }
+}

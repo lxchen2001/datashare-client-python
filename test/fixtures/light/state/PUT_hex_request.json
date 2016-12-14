@@ -1,0 +1,13 @@
+{
+  "params": {
+    "color": {
+      "hex": "#FF5500"
+    },
+    "on": true
+  },
+  "target": {
+    "byUdi": [
+      "light-udi"
+    ]
+  }
+}

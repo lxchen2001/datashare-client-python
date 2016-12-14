@@ -1,0 +1,110 @@
+from http.client import UNAUTHORIZED
+import json
+from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
+
+from orange_datashare.connection import ConnectionApi
+from orange_datashare.data import DataApi
+from orange_datashare.device import DeviceApi
+from orange_datashare.light import LightApi
+from orange_datashare.subscription import SubscriptionApi
+from orange_datashare.thermostat import ThermostatApi
+
+
+class InvalidStatusCode(Exception):
+    def __init__(self, status_code, body):
+        self.status_code = status_code
+        self.body = body
+
+    def __str__(self):
+        if self.body is None:
+            return '%d' % self.status_code
+        elif type(self.body) == str:
+            return '%d : %s' % (self.status_code, self.body)
+        else:
+            return '%d : %s' % (self.status_code, json.dumps(self.body))
+
+
+class DatashareClient(CredentialManager):
+    ENDPOINT = 'https://datashare.orange.com'
+
+    PROXIES = None
+
+    def __init__(self, client_id, client_secret, scopes, skip_ssl_verifications=False):
+        super(DatashareClient, self).__init__(
+            ServiceInformation(authorize_service='%s/oauth/authorize' % DatashareClient.ENDPOINT,
+                               token_service='%s/oauth/token' % DatashareClient.ENDPOINT,
+                               client_id=client_id,
+                               client_secret=client_secret,
+                               scopes=scopes,
+                               skip_ssl_verifications=skip_ssl_verifications),
+            DatashareClient.PROXIES)
+        self._connections = ConnectionApi(self)
+        self._devices = DeviceApi(self)
+        self._data = DataApi(self)
+        self._lights = LightApi(self)
+        self._subscriptions = SubscriptionApi(self)
+        self._thermostats = ThermostatApi(self)
+
+    @property
+    def connections(self):
+        return self._connections
+
+    @property
+    def devices(self):
+        return self._devices
+
+    @property
+    def data(self):
+        return self._data
+
+    @property
+    def lights(self):
+        return self._lights
+
+    @property
+    def subscriptions(self):
+        return self._subscriptions
+
+    @property
+    def thermostats(self):
+        return self._thermostats
+
+    @staticmethod
+    def _is_token_expired(response):
+        if response.status_code == UNAUTHORIZED:
+            try:
+                json_data = response.json()
+                return json_data.get('error', '') == 'invalid_token'
+            except:
+                return False
+        else:
+            return False
+
+    def _get(self, uri, params=None, **kwargs):
+        return DatashareClient._check_response(
+            self.get('%s%s' % (DatashareClient.ENDPOINT, uri), params=params, **kwargs)
+        ).json()
+
+    def _post(self, uri, data=None, json=None, **kwargs):
+        return self.post('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
+
+    def _put(self, uri, data=None, json=None, **kwargs):
+        return self.put('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
+
+    def _patch(self, uri, data=None, json=None, **kwargs):
+        return self.patch('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
+
+    def _delete(self, uri, **kwargs):
+        return self.delete('%s%s' % (DatashareClient.ENDPOINT, uri), **kwargs)
+
+    @staticmethod
+    def _check_response(response, expected_status=None):
+        if expected_status is None and int(response.status_code / 100) == 2 or \
+                                expected_status is not None and int(response.status_code) == expected_status:
+            return response
+        else:
+            try:
+                body = response.json()
+            except Exception:
+                body = response.text
+            raise InvalidStatusCode(response.status_code, body)

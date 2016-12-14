@@ -1,0 +1,15 @@
+[
+  {
+    "battery": 0,
+    "id": {
+      "instance": "instance-child",
+      "model": "child"
+    },
+    "error": "NONE",
+    "niceName": "string",
+    "parentId": {
+      "instance": "instance",
+      "model": "model"
+    }
+  }
+]

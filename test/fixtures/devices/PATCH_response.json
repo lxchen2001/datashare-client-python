@@ -1,0 +1,49 @@
+[
+  {
+    "battery": 0,
+    "capabilities": {
+      "commands": [
+        "string"
+      ],
+      "data": [
+        "string"
+      ]
+    },
+    "created": "2016-12-20T14:18:15.863Z",
+    "error": "NONE",
+    "id": 0,
+    "instance": "instance",
+    "lastStateChanged": "2016-12-20T14:18:15.863Z",
+    "lastSync": "2016-12-20T14:18:15.863Z",
+    "links": {},
+    "model": "model",
+    "niceName": "my first object",
+    "parentId": null,
+    "status": "CONNECTED",
+    "udi": "connection:model:instance"
+  },
+  {
+
+    "battery": 0,
+    "capabilities": {
+      "commands": [
+        "string"
+      ],
+      "data": [
+        "string"
+      ]
+    },
+    "created": "2016-12-20T14:18:15.863Z",
+    "error": "NONE",
+    "id": 1,
+    "instance": "instance-child",
+    "lastStateChanged": "2016-12-20T14:18:15.863Z",
+    "lastSync": "2016-12-20T14:18:15.863Z",
+    "links": {},
+    "model": "child",
+    "niceName": "my first object",
+    "parentId": 0,
+    "status": "CONNECTED",
+    "udi": "connection:child:instance-child"
+  }
+]

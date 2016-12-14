@@ -1,0 +1,25 @@
+[
+  {
+    "battery": 0,
+    "capabilities": {
+      "commands": [
+        "string"
+      ],
+      "data": [
+        "string"
+      ]
+    },
+    "created": "2016-12-20T14:18:15.863Z",
+    "error": "NONE",
+    "id": 0,
+    "instance": "instance",
+    "lastStateChanged": "2016-12-20T14:18:15.863Z",
+    "lastSync": "2016-12-20T14:18:15.863Z",
+    "links": {},
+    "model": "model",
+    "niceName": "my first object",
+    "parentId": null,
+    "status": "CONNECTED",
+    "udi": "connection:model:instance"
+  }
+]

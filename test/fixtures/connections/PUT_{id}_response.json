@@ -1,0 +1,35 @@
+{
+  "connectorName": "carpetcorp",
+  "created": "2016-12-20T14:18:15.776Z",
+  "devices": [
+    {
+      "battery": 0,
+      "capabilities": {
+        "commands": [
+          "string"
+        ],
+        "data": [
+          "string"
+        ]
+      },
+      "created": "2016-12-20T14:18:15.776Z",
+      "error": "NONE",
+      "id": 0,
+      "instance": "02:00:00:12:e8:d2",
+      "lastStateChanged": "2016-12-20T14:18:15.776Z",
+      "lastSync": "2016-12-20T14:18:15.776Z",
+      "links": {},
+      "model": "icarpet3",
+      "niceName": "my connected carpet",
+      "parentId": 0,
+      "status": "CONNECTED",
+      "udi": "carpetcorp:icarpet3@02:00:00:12:e8:d2"
+    }
+  ],
+  "error": "NONE",
+  "id": 0,
+  "key": "AK1RT2",
+  "lastStateChanged": "2016-12-20T14:18:15.776Z",
+  "links": {},
+  "status": "WORKING"
+}

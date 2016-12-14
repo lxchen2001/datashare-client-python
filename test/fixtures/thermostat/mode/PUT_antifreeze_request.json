@@ -1,0 +1,12 @@
+{
+  "params": {
+    "endDate": "2016-12-21T11:35:11.745Z",
+    "temperature": 19.0,
+    "type": "antifreeze"
+  },
+  "target": {
+    "byUdi": [
+      "thermostat-udi"
+    ]
+  }
+}

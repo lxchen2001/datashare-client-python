@@ -1,0 +1,13 @@
+[
+  {
+    "filter": {
+      "metadata": {
+        "device": "carpetcorp:icarpet3@02:00:00:12:e8:d2"
+      }
+    },
+    "id": 0,
+    "key": "sub_for_user_12345_to_temperatures",
+    "path": "/indoor/air/temperature",
+    "url": "https://myhost/notification/callback?from=liveobjects"
+  }
+]
