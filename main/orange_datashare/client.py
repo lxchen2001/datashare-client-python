@@ -38,36 +38,36 @@ class DatashareClient(CredentialManager):
                                scopes=scopes,
                                skip_ssl_verifications=skip_ssl_verifications),
             DatashareClient.PROXIES)
-        self._connections = ConnectionApi(self)
-        self._devices = DeviceApi(self)
+        self._connection = ConnectionApi(self)
+        self._device = DeviceApi(self)
         self._data = DataApi(self)
-        self._lights = LightApi(self)
-        self._subscriptions = SubscriptionApi(self)
-        self._thermostats = ThermostatApi(self)
+        self._light = LightApi(self)
+        self._subscription = SubscriptionApi(self)
+        self._thermostat = ThermostatApi(self)
 
     @property
-    def connections(self):
-        return self._connections
+    def connection(self):
+        return self._connection
 
     @property
-    def devices(self):
-        return self._devices
+    def device(self):
+        return self._device
 
     @property
     def data(self):
         return self._data
 
     @property
-    def lights(self):
-        return self._lights
+    def light(self):
+        return self._light
 
     @property
-    def subscriptions(self):
-        return self._subscriptions
+    def subscription(self):
+        return self._subscription
 
     @property
-    def thermostats(self):
-        return self._thermostats
+    def thermostat(self):
+        return self._thermostat
 
     @staticmethod
     def _is_token_expired(response):
