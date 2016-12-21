@@ -1,4 +1,4 @@
-from http.client import CREATED, NO_CONTENT
+from http.client import OK, NO_CONTENT
 
 from orange_datashare.abstract_api import AbstractApi
 
@@ -8,7 +8,7 @@ class ConnectionApi(AbstractApi):
         return self.client._check_response(
             self.client._post('/api/v2/users/%s/connections' % user_id,
                               json=dict(connectorName=connector_name, key=key)),
-            CREATED).json()
+            OK).json()
 
     def get_connection(self, user_id, connection_id):
         return self.client._get('/api/v2/users/%s/connections/%s' % (user_id, connection_id))

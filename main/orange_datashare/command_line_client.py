@@ -1,14 +1,14 @@
+import json
 import logging
 import os
-import json
 import random
-import sys
 import stat
+import sys
 
 from oauth2_client.credentials_manager import OAuthError
+
 from orange_datashare.client import DatashareClient
 
-logging.getLogger(__name__)
 _configuration_directory = os.path.join(os.path.expanduser('~'), '.datashare-client')
 _configuration_file = os.path.join(_configuration_directory, 'configuration.json')
 
@@ -17,6 +17,7 @@ _logger = logging.getLogger(__name__)
 
 class _CommandClient(DatashareClient):
     def __init__(self, client_id, client_secret, scopes, skip_ssl_verification):
+        self.PROXIES = dict(http=os.environ.get('http_proxy', ''), https=os.environ.get('https_proxy', ''))
         super(_CommandClient, self).__init__(client_id, client_secret, scopes, skip_ssl_verification)
 
     def set_tokens(self, access_token, refresh_token):
@@ -54,16 +55,17 @@ class _CommandClient(DatashareClient):
 
 def _prompt(msg):
     sys.stdout.write('%s: ' % msg)
+    sys.stdout.flush()
     response = sys.stdin.readline()
     return response.rstrip('\r\n')
 
 
 def _init_oauth_process(client):
-    default_redirect_uri = 'https://localhost:8080'
+    default_redirect_uri = 'http://localhost:8080'
     redirect_uri = _prompt('Redirect uri: [%s]' % default_redirect_uri)
     if len(redirect_uri) == 0:
         redirect_uri = default_redirect_uri
-    url_to_open = client.init_authorize_code_process('', state=str(random.random()))
+    url_to_open = client.init_authorize_code_process(redirect_uri, state=str(random.random()))
     _logger.warning('***** OPEN THIS URL IN YOUR BROWSER *****\n\t%s', url_to_open)
     code = client.wait_and_terminate_authorize_code_process()
     client.init_with_authorize_code(redirect_uri=redirect_uri, code=code)

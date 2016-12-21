@@ -1,4 +1,4 @@
-from http.client import OK, CREATED, NOT_FOUND, NO_CONTENT
+from http.client import OK, NOT_FOUND, NO_CONTENT
 from unittest import TestCase
 
 from orange_datashare.client import InvalidStatusCode
@@ -54,7 +54,7 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
     def test_create(self):
         self.client.post.return_value = mock_api_response(
             '/api/v2/users/-/connections',
-            CREATED,
+            OK,
             None,
             'connections', 'POST_response.json')
         connection = self.connections.create_connection('-', 'test-connector', 'test-key')

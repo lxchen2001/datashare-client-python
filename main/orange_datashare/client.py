@@ -1,5 +1,6 @@
 from http.client import UNAUTHORIZED
 import json
+import logging
 from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
 
 from orange_datashare.connection import ConnectionApi
@@ -9,6 +10,7 @@ from orange_datashare.light import LightApi
 from orange_datashare.subscription import SubscriptionApi
 from orange_datashare.thermostat import ThermostatApi
 
+_logger = logging.getLogger(__name__)
 
 class InvalidStatusCode(Exception):
     def __init__(self, status_code, body):
@@ -24,6 +26,7 @@ class InvalidStatusCode(Exception):
             return '%d : %s' % (self.status_code, json.dumps(self.body))
 
 
+
 class DatashareClient(CredentialManager):
     ENDPOINT = 'https://datashare.orange.com'
 
@@ -37,7 +40,7 @@ class DatashareClient(CredentialManager):
                                client_secret=client_secret,
                                scopes=scopes,
                                skip_ssl_verifications=skip_ssl_verifications),
-            DatashareClient.PROXIES)
+            self.PROXIES)
         self._connection = ConnectionApi(self)
         self._device = DeviceApi(self)
         self._data = DataApi(self)
@@ -81,20 +84,25 @@ class DatashareClient(CredentialManager):
             return False
 
     def _get(self, uri, params=None, **kwargs):
+        _logger.debug('_get - %s - params=%s',  uri, params)
         return DatashareClient._check_response(
             self.get('%s%s' % (DatashareClient.ENDPOINT, uri), params=params, **kwargs)
         ).json()
 
     def _post(self, uri, data=None, json=None, **kwargs):
+        _logger.debug('_post - %s - data=%s - json=%s', uri, data, json)
         return self.post('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
 
     def _put(self, uri, data=None, json=None, **kwargs):
+        _logger.debug('_put - %s - data=%s - json=%s', uri, data, json)
         return self.put('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
 
     def _patch(self, uri, data=None, json=None, **kwargs):
+        _logger.debug('_patch - %s - data=%s - json=%s', uri, data, json)
         return self.patch('%s%s' % (DatashareClient.ENDPOINT, uri), data=data, json=json, **kwargs)
 
     def _delete(self, uri, **kwargs):
+        _logger.debug('_delete - %s', uri)
         return self.delete('%s%s' % (DatashareClient.ENDPOINT, uri), **kwargs)
 
     @staticmethod
