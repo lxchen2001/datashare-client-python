@@ -55,7 +55,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          None,
                                                          'subscriptions', 'PUT_{key}_response.json')
         request = json.loads(load_resource_file('subscriptions', 'PUT_{key}_request.json'))
-        self.subscription.update_subscriptions('-', 'subscription-key', request)
+        self.subscription.set_subscription('-', 'subscription-key', request)
         self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=request)
 
     def test_remove_single(self):

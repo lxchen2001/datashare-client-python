@@ -52,10 +52,19 @@ def main():
     sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
 
 
+
+
     # Subscriptions
     commands.add_parser('list_subscriptions', help='List subscriptions')
     sub_parser = commands.add_parser('get_subscription', help='Get subscription')
     sub_parser.add_argument('subscription_key', action=StorePositional, type=str, help='Subscription key')
+    sub_parser = commands.add_parser('set_subscription', help='Set the subscription')
+    sub_parser.add_argument('subscription_key', action=StorePositional, type=str, help='Subscription key')
+    sub_parser.add_argument('subscription_description', action=StorePositional, type=str,
+                            help='The json representation of the subscription')
+    sub_parser = commands.add_parser('remove_subscription', help='Remove subscription')
+    sub_parser.add_argument('subscription_key', action=StorePositional, type=str, help='Subscription key')
+    commands.add_parser('remove_all_subscriptions', help='Remove all subscriptions')
 
     arguments = parser.parse_args()
 
@@ -92,6 +101,12 @@ def main():
     # Subscriptions
     command_mapper["list_subscriptions"] = lambda c: c.subscription.list_subscriptions("me")
     command_mapper["get_subscription"] = lambda c: c.subscription.get_subscription("me", arguments.subscription_key)
+    command_mapper["set_subscription"] = lambda c: c.subscription.set_subscription("me",
+                                                                                   arguments.subscription_key,
+                                                                                   json.loads(arguments.subscription_description))
+    command_mapper["remove_subscription"] = lambda c: c.subscription.remove_subscription("me",
+                                                                                         arguments.subscription_key)
+    command_mapper["remove_all_subscriptions"] = lambda c: c.subscription.remove_subscriptions("me")
 
     with load_client() as client:
         if arguments.action is not None:
