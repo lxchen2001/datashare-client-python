@@ -28,28 +28,28 @@ def main():
     # Connections
     commands.add_parser('list_connections', help='List connections')
     sub_parser = commands.add_parser('get_connection', help='Get connection')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
     sub_parser = commands.add_parser('create_connection', help='Create connection')
     sub_parser.add_argument('connector_name', action=StorePositional, type=str, help='Connector name')
     sub_parser.add_argument('connection_key', action=StorePositional, type=str, help='Connection key')
     sub_parser = commands.add_parser('update_connection_status', help='Update connection status')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
     sub_parser.add_argument('status', action=StorePositional, type=str, help='Status')
     sub_parser.add_argument('reason', action=StorePositional, type=str, help='Reason')
     sub_parser = commands.add_parser('delete_connection', help='Delete connection')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
 
     # Devices
     sub_parser = commands.add_parser('list_devices', help='List devices of a connection')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
     sub_parser = commands.add_parser('get_device', help='Get a device of a connection')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
-    sub_parser.add_argument('device_id', action=StorePositional, type=str, help='Device id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
+    sub_parser.add_argument('device_id', action=StorePositional, type=int, help='Device id')
     sub_parser = commands.add_parser('set_devices', help='Set the devices of a connection')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
     sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
     sub_parser = commands.add_parser('update_devices', help='Update the devices of a connection (merge with existing)')
-    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=int, help='Connection id')
     sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
 
     # Subscriptions
@@ -83,7 +83,7 @@ def main():
     sub_parser = commands.add_parser('set_thermostat_mode', help='Set thermostat mode')
     sub_parser.add_argument('thermostat_udi', action=StorePositional, type=str, help='Thermostat udi')
     sub_parser.add_argument('mode', action=StorePositional, type=str, help='Thermostat mode')
-    sub_parser.add_argument('temperature', action=StorePositional, type=str, help='Thermostat mode temperature')
+    sub_parser.add_argument('temperature', action=StorePositional, type=float, help='Thermostat mode temperature')
     sub_parser.add_argument('end_date', action=StorePositional, type=str,
                             help='Thermostat mode end date in JSON format')
 
@@ -138,13 +138,16 @@ def main():
                                                                json.loads(arguments.data))
 
     # Light
-    command_mapper["set_light_state"] = lambda c: c.light.light("me", [arguments.light_udi], arguments.color)
+    command_mapper["set_light_state"] = lambda c: c.light.set_sate("me",
+                                                                   [arguments.light_udi],
+                                                                   arguments.state.lower() == "on",
+                                                                   arguments.color)
 
     # Thermostat
     command_mapper["set_thermostat_mode"] = lambda c: c.thermostat.set_mode("me", [arguments.thermostat_udi],
                                                                             getattr(ThermostatMode,
                                                                                     arguments.mode.upper()),
-                                                                            float(arguments.temperature),
+                                                                            arguments.temperature,
                                                                             arguments.end_date)
 
     with load_client() as client:
