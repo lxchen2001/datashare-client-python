@@ -1,5 +1,7 @@
-from argparse import ArgumentParser, Action
 import logging
+import json
+from argparse import ArgumentParser, Action
+
 from orange_datashare.command_line_client import load_client
 
 _logger = logging.getLogger(__name__)
@@ -36,6 +38,20 @@ def main():
     sub_parser = commands.add_parser('delete_connection', help='Delete connection')
     sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
 
+    # Devices
+    sub_parser = commands.add_parser('list_devices', help='List devices of a connection')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser = commands.add_parser('get_device', help='Get a device of a connection')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('device_id', action=StorePositional, type=str, help='Device id')
+    sub_parser = commands.add_parser('set_devices', help='Set the devices of a connection')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
+    sub_parser = commands.add_parser('update_devices', help='Update the devices of a connection (merge with existing)')
+    sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
+    sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
+
+
     # Subscriptions
     commands.add_parser('list_subscriptions', help='List subscriptions')
     sub_parser = commands.add_parser('get_subscription', help='Get subscription')
@@ -62,6 +78,16 @@ def main():
                                               arguments.status,
                                               arguments.reason)
     command_mapper["delete_connection"] = lambda c: c.connection.delete_connection("me", arguments.connection_id)
+
+    # Devices
+    command_mapper["list_devices"] = lambda c: c.device.list_devices("me", arguments.connection_id)
+    command_mapper["get_device"] = lambda c: c.device.get_device("me", arguments.connection_id, arguments.device_id)
+    command_mapper["set_devices"] = lambda c: c.device.set_connection_devices("me",
+                                                                              arguments.connection_id,
+                                                                              json.loads(arguments.devices))
+    command_mapper["update_devices"] = lambda c: c.device.update_connection_devices("me",
+                                                                                    arguments.connection_id,
+                                                                                    json.loads(arguments.devices))
 
     # Subscriptions
     command_mapper["list_subscriptions"] = lambda c: c.subscription.list_subscriptions("me")
