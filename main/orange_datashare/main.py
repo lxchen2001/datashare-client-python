@@ -1,8 +1,9 @@
-import logging
 import json
+import logging
 from argparse import ArgumentParser, Action
 
 from orange_datashare.command_line_client import load_client
+from orange_datashare.thermostat import ThermostatMode
 
 _logger = logging.getLogger(__name__)
 
@@ -72,6 +73,19 @@ def main():
     sub_parser.add_argument('data', action=StorePositional, type=str,
                             help='The json representation of the data')
 
+    # Light
+    sub_parser = commands.add_parser('set_light_state', help='Set light state')
+    sub_parser.add_argument('light_udi', action=StorePositional, type=str, help='Light udi')
+    sub_parser.add_argument('state', action=StorePositional, type=str, help='Light state (on/off)')
+    sub_parser.add_argument('color', action=StorePositional, type=str, help='Light color (in hex format)')
+
+    # Thermostat
+    sub_parser = commands.add_parser('set_thermostat_mode', help='Set thermostat mode')
+    sub_parser.add_argument('thermostat_udi', action=StorePositional, type=str, help='Thermostat udi')
+    sub_parser.add_argument('mode', action=StorePositional, type=str, help='Thermostat mode')
+    sub_parser.add_argument('temperature', action=StorePositional, type=str, help='Thermostat mode temperature')
+    sub_parser.add_argument('end_date', action=StorePositional, type=str,
+                            help='Thermostat mode end date in JSON format')
 
     arguments = parser.parse_args()
 
@@ -110,7 +124,8 @@ def main():
     command_mapper["get_subscription"] = lambda c: c.subscription.get_subscription("me", arguments.subscription_key)
     command_mapper["set_subscription"] = lambda c: c.subscription.set_subscription("me",
                                                                                    arguments.subscription_key,
-                                                                                   json.loads(arguments.subscription_description))
+                                                                                   json.loads(
+                                                                                       arguments.subscription_description))
     command_mapper["remove_subscription"] = lambda c: c.subscription.remove_subscription("me",
                                                                                          arguments.subscription_key)
     command_mapper["remove_all_subscriptions"] = lambda c: c.subscription.remove_subscriptions("me")
@@ -119,8 +134,18 @@ def main():
     command_mapper["list_streams"] = lambda c: c.data.list_streams("me")
     command_mapper["get_data"] = lambda c: c.data.get_data("me", arguments.stream)
     command_mapper["write_data"] = lambda c: c.data.write_data("me",
-                                                             arguments.stream,
-                                                             json.loads(arguments.data))
+                                                               arguments.stream,
+                                                               json.loads(arguments.data))
+
+    # Light
+    command_mapper["set_light_state"] = lambda c: c.light.light("me", [arguments.light_udi], arguments.color)
+
+    # Thermostat
+    command_mapper["set_thermostat_mode"] = lambda c: c.thermostat.set_mode("me", [arguments.thermostat_udi],
+                                                                            getattr(ThermostatMode,
+                                                                                    arguments.mode.upper()),
+                                                                            float(arguments.temperature),
+                                                                            arguments.end_date)
 
     with load_client() as client:
         if arguments.action is not None:
