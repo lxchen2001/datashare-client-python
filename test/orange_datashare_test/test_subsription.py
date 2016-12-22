@@ -1,5 +1,5 @@
 import json
-from http.client import OK, NOT_FOUND, NO_CONTENT
+from http.client import OK, NOT_FOUND, NO_CONTENT, CREATED
 from unittest import TestCase
 
 from orange_datashare.client import InvalidStatusCode
@@ -51,7 +51,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
 
     def test_update(self):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/subscriptions/subscription-key',
-                                                         OK,
+                                                         CREATED,
                                                          None,
                                                          'subscriptions', 'PUT_{key}_response.json')
         request = json.loads(load_resource_file('subscriptions', 'PUT_{key}_request.json'))

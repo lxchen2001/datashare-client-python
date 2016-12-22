@@ -51,9 +51,6 @@ def main():
     sub_parser.add_argument('connection_id', action=StorePositional, type=str, help='Connection id')
     sub_parser.add_argument('devices', action=StorePositional, type=str, help='The json representation of the devices')
 
-
-
-
     # Subscriptions
     commands.add_parser('list_subscriptions', help='List subscriptions')
     sub_parser = commands.add_parser('get_subscription', help='Get subscription')
@@ -65,6 +62,16 @@ def main():
     sub_parser = commands.add_parser('remove_subscription', help='Remove subscription')
     sub_parser.add_argument('subscription_key', action=StorePositional, type=str, help='Subscription key')
     commands.add_parser('remove_all_subscriptions', help='Remove all subscriptions')
+
+    # Data
+    commands.add_parser('list_streams', help='List available streams')
+    sub_parser = commands.add_parser('get_data', help='Get data of a stream')
+    sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
+    sub_parser = commands.add_parser('write_data', help='Write data to a stream')
+    sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
+    sub_parser.add_argument('data', action=StorePositional, type=str,
+                            help='The json representation of the data')
+
 
     arguments = parser.parse_args()
 
@@ -107,6 +114,13 @@ def main():
     command_mapper["remove_subscription"] = lambda c: c.subscription.remove_subscription("me",
                                                                                          arguments.subscription_key)
     command_mapper["remove_all_subscriptions"] = lambda c: c.subscription.remove_subscriptions("me")
+
+    # Data
+    command_mapper["list_streams"] = lambda c: c.data.list_streams("me")
+    command_mapper["get_data"] = lambda c: c.data.get_data("me", arguments.stream)
+    command_mapper["write_data"] = lambda c: c.data.write_data("me",
+                                                             arguments.stream,
+                                                             json.loads(arguments.data))
 
     with load_client() as client:
         if arguments.action is not None:

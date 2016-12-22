@@ -11,6 +11,6 @@ class DataApi(AbstractApi):
 
     def write_data(self, user_id, stream, data):
         self.client._check_response(
-            self.client._post('/api/v2/users/%s/data%s' % (user_id, stream), json=data),
+            self.client._post('/api/v1/users/%s/data%s' % (user_id, stream), json=data),
             expected_status=ACCEPTED
         )
