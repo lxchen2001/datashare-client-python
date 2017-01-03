@@ -1,6 +1,13 @@
-from http.client import UNAUTHORIZED
+"""
+Copyright (C) 2016 Orange
+This software is distributed under the terms and conditions of the 'BSD 3'
+license which can be found in the file 'LICENSE' in this package distribution
+"""
+
 import json
 import logging
+from http.client import UNAUTHORIZED
+
 from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
 
 from orange_datashare.connection import ConnectionApi
@@ -11,6 +18,7 @@ from orange_datashare.subscription import SubscriptionApi
 from orange_datashare.thermostat import ThermostatApi
 
 _logger = logging.getLogger(__name__)
+
 
 class InvalidStatusCode(Exception):
     def __init__(self, status_code, body):
@@ -24,7 +32,6 @@ class InvalidStatusCode(Exception):
             return '%d : %s' % (self.status_code, self.body)
         else:
             return '%d : %s' % (self.status_code, json.dumps(self.body))
-
 
 
 class DatashareClient(CredentialManager):
@@ -84,7 +91,7 @@ class DatashareClient(CredentialManager):
             return False
 
     def _get(self, uri, params=None, **kwargs):
-        _logger.debug('_get - %s - params=%s',  uri, params)
+        _logger.debug('_get - %s - params=%s', uri, params)
         return DatashareClient._check_response(
             self.get('%s%s' % (DatashareClient.ENDPOINT, uri), params=params, **kwargs)
         ).json()
