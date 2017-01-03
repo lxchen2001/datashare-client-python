@@ -1,0 +1,8 @@
+requests - https://github.com/kennethreitz/requests
+Copyright 2016 Kenneth Reitz
+requests is distributed under the terms of the Apache v2 license
+http://www.apache.org/licenses/LICENSE-2.0
+
+oauth2-client - https://github.com/antechrestos/OAuth2Client
+oauth2-client is distributed under the terms of the Apache v2 license
+http://www.apache.org/licenses/LICENSE-2.0
