@@ -1,6 +1,7 @@
-from setuptools import setup, find_packages
 import os
 import shutil
+
+from setuptools import setup, find_packages
 
 src_dir = 'main'
 package_directory = 'orange_datashare'
@@ -34,6 +35,7 @@ setup(name=package_name,
           "Programming Language :: Python",
           "Natural Language :: English",
           "Operating System :: OS Independent",
+          "Programming Language :: Python :: 2.7",
           "Programming Language :: Python :: 3",
           "Programming Language :: Python :: 3.3",
           "Programming Language :: Python :: 3.4",
