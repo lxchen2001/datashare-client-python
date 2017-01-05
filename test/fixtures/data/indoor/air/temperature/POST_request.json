@@ -1,10 +1,12 @@
 [
   {
-    "at": "2015-01-02T08:00:00Z",
-    "value": 1.0,
+    "timestamp": "2017-01-05T08:00:00Z",
+    "model": "/indoor/air/temperature",
+    "value": {
+      "value": 1.0
+    },
     "metadata": {
-      "origin": "adfa91af",
-      "device": "OnDemand:model-test-push-data@instance-post"
+      "source": "my_connector:the-model@number-two"
     }
   }
 ]
