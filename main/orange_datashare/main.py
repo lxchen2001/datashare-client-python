@@ -7,9 +7,9 @@ import json
 import logging
 from argparse import ArgumentParser, Action
 
-from orange_datashare.command_line_client import load_client
-from orange_datashare.thermostat import ThermostatMode
 from orange_datashare import __version__
+from orange_datashare.command import ThermostatMode
+from orange_datashare.command_line_client import load_client
 
 _logger = logging.getLogger(__name__)
 
@@ -145,17 +145,17 @@ def main():
                                                                json.loads(arguments.data))
 
     # Light
-    command_mapper["set_light_state"] = lambda c: c.light.set_sate("me",
-                                                                   [arguments.light_udi],
-                                                                   arguments.state.lower() == "on",
-                                                                   arguments.color)
+    command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
+                                                                            [arguments.light_udi],
+                                                                            arguments.state.lower() == "on",
+                                                                            arguments.color)
 
     # Thermostat
-    command_mapper["set_thermostat_mode"] = lambda c: c.thermostat.set_mode("me", [arguments.thermostat_udi],
-                                                                            getattr(ThermostatMode,
-                                                                                    arguments.mode.upper()),
-                                                                            arguments.temperature,
-                                                                            arguments.end_date)
+    command_mapper["set_thermostat_mode"] = lambda c: c.command.set_thermostat_mode("me", [arguments.thermostat_udi],
+                                                                                    getattr(ThermostatMode,
+                                                                                            arguments.mode.upper()),
+                                                                                    arguments.temperature,
+                                                                                    arguments.end_date)
 
     with load_client() as client:
         if arguments.action is not None:

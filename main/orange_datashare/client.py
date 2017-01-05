@@ -10,12 +10,11 @@ from http.client import UNAUTHORIZED
 
 from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
 
+from orange_datashare.command import CommandApi
 from orange_datashare.connection import ConnectionApi
 from orange_datashare.data import DataApi
 from orange_datashare.device import DeviceApi
-from orange_datashare.light import LightApi
 from orange_datashare.subscription import SubscriptionApi
-from orange_datashare.thermostat import ThermostatApi
 
 _logger = logging.getLogger(__name__)
 
@@ -51,9 +50,8 @@ class DatashareClient(CredentialManager):
         self._connection = ConnectionApi(self)
         self._device = DeviceApi(self)
         self._data = DataApi(self)
-        self._light = LightApi(self)
         self._subscription = SubscriptionApi(self)
-        self._thermostat = ThermostatApi(self)
+        self._command = CommandApi(self)
 
     @property
     def connection(self):
@@ -68,16 +66,12 @@ class DatashareClient(CredentialManager):
         return self._data
 
     @property
-    def light(self):
-        return self._light
-
-    @property
     def subscription(self):
         return self._subscription
 
     @property
-    def thermostat(self):
-        return self._thermostat
+    def command(self):
+        return self._command
 
     @staticmethod
     def _is_token_expired(response):

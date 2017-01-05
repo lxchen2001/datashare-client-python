@@ -8,7 +8,7 @@ import unittest
 from unittest import mock
 
 import orange_datashare.main as main
-from orange_datashare.thermostat import ThermostatMode
+from orange_datashare.command import ThermostatMode
 
 
 class TestMain(unittest.TestCase):
@@ -136,7 +136,7 @@ class TestMain(unittest.TestCase):
     def test_set_light_state(self, mock_client_loader):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
-        fake_client.light.set_sate.assert_called_with('me', ['light-udi'], True, "#FFDDEE")
+        fake_client.command.set_light_state.assert_called_with('me', ['light-udi'], True, "#FFDDEE")
 
     @mock.patch.object(sys, 'argv', ['main', 'set_thermostat_mode', 'thermostat-udi', 'antifreeze', '29.3',
                                      "2016-12-21T11:35:11.745Z"])
@@ -144,8 +144,9 @@ class TestMain(unittest.TestCase):
     def test_set_thermostat_mode(self, mock_client_loader):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
-        fake_client.thermostat.set_mode.assert_called_with('me', ['thermostat-udi'], ThermostatMode.ANTIFREEZE, 29.3,
-                                                           "2016-12-21T11:35:11.745Z")
+        fake_client.command.set_thermostat_mode.assert_called_with('me', ['thermostat-udi'],
+                                                                   ThermostatMode.ANTIFREEZE, 29.3,
+                                                                   "2016-12-21T11:35:11.745Z")
 
     @staticmethod
     def _configure_mock_client(mock_client_loader):
