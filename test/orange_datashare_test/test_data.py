@@ -34,7 +34,7 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertEqual(2, len(streams))
 
     def test_get_succeed(self):
-        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/indoor/air/temperature',
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/timeseries/indoor/air/temperature',
                                                          OK,
                                                          None,
                                                          'data', 'indoor', 'air', 'temperature', 'GET_response.json')
@@ -50,7 +50,7 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertEqual(1.0, data[0]["value"])
 
     def test_post_succeed(self):
-        self.client.post.return_value = mock_api_response('/api/v2/users/-/data/indoor/air/temperature',
+        self.client.post.return_value = mock_api_response('/api/v2/users/-/data/timeseries/indoor/air/temperature',
                                                           ACCEPTED,
                                                           None,
                                                           'data', 'indoor', 'air', 'temperature', 'GET_response.json')

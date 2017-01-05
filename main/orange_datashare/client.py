@@ -6,14 +6,14 @@ license which can be found in the file 'LICENSE' in this package distribution
 
 import json
 import logging
-from orange_datashare.imported import UNAUTHORIZED
 
 from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
 
 from orange_datashare.command import CommandApi
 from orange_datashare.connection import ConnectionApi
-from orange_datashare.data import DataApi
+from orange_datashare.data import DataApi, DataApiV1
 from orange_datashare.device import DeviceApi
+from orange_datashare.imported import UNAUTHORIZED
 from orange_datashare.subscription import SubscriptionApi
 
 _logger = logging.getLogger(__name__)
@@ -50,6 +50,7 @@ class DatashareClient(CredentialManager):
         self._connection = ConnectionApi(self)
         self._device = DeviceApi(self)
         self._data = DataApi(self)
+        self._deprecated_data = DataApiV1(self)
         self._subscription = SubscriptionApi(self)
         self._command = CommandApi(self)
 
@@ -64,6 +65,10 @@ class DatashareClient(CredentialManager):
     @property
     def data(self):
         return self._data
+
+    @property
+    def deprecated_data(self):
+        return self._deprecated_data
 
     @property
     def subscription(self):

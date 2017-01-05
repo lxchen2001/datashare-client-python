@@ -7,6 +7,7 @@ from datetime import datetime
 from enum import Enum
 
 from orange_datashare.abstract_api import AbstractApi
+from orange_datashare.imported import ACCEPTED
 
 
 class ThermostatMode(Enum):
@@ -30,8 +31,11 @@ class CommandApi(AbstractApi):
                     request["params"]["color"] = dict(rgb=color)
                 else:
                     request["params"]["color"] = dict(hsl=color)
-        return self.client._put('/api/v2/users/%s/commands/light/state' % user_id,
-                                json=request)
+        return self.client._check_response(
+            self.client._put('/api/v2/users/%s/commands/light/state' % user_id,
+                             json=request),
+            expected_status=ACCEPTED
+        ).json()
 
     def set_thermostat_mode(self, user_id, thermostat_udis, mode, temperature, end_date):
         if end_date is not None and isinstance(end_date, int) or isinstance(end_date, float):
@@ -39,4 +43,7 @@ class CommandApi(AbstractApi):
                                      int((end_date * 1000) % 1000))
         request = dict(params=dict(endDate=end_date, temperature=temperature, type=mode.value),
                        target=dict(byUdi=thermostat_udis))
-        return self.client._put('/api/v2/users/%s/commands/thermostat/mode' % user_id, json=request)
+        return self.client._check_response(
+            self.client._put('/api/v2/users/%s/commands/thermostat/mode' % user_id, json=request),
+            expected_status=ACCEPTED
+        ).json()

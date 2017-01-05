@@ -4,7 +4,7 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import json
-from orange_datashare.imported import OK
+from orange_datashare.imported import ACCEPTED
 from unittest import TestCase
 
 from orange_datashare.command import CommandApi, ThermostatMode
@@ -23,7 +23,7 @@ class CommandApiTest(TestCase, AbstractTestCase):
 
     def _test_thermostat_mode(self, mode, temperature, end_date, expected_file):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/commands/thermostat/mode',
-                                                         OK,
+                                                         ACCEPTED,
                                                          None,
                                                          'thermostat', 'mode', 'PUT_response.json')
         expected_request = json.loads(load_resource_file('thermostat', 'mode', expected_file))
@@ -32,7 +32,7 @@ class CommandApiTest(TestCase, AbstractTestCase):
 
     def _test_light_state(self, color, expected_file):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/commands/light/state',
-                                                         OK,
+                                                         ACCEPTED,
                                                          None,
                                                          'light', 'state', 'PUT_response.json')
         expected_request = json.loads(load_resource_file('light', 'state', expected_file))

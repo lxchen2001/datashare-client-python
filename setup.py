@@ -52,7 +52,7 @@ setup(name=package_name,
           ]
       },
       package_dir={package_directory: '%s/%s' % (src_dir, package_directory)},
-      install_requires=[requirement.rstrip(' \r\n') for requirement in open('requirements.txt').readlines()],
+      install_requires=requirements,
       tests_require=[
           'mock==2.0.0',
       ],

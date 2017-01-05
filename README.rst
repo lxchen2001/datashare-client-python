@@ -85,6 +85,7 @@ The api brings the following *domains*.
 - `device`: this API will allows you to manage devices of connection.
 - `subscription`: this API will allows you to manage your subscriptions
 - `data`: with this API you will be allowed to query the data of your devices
+- `deprecated_data`: with this API you will be allowed to query the data of your devices with old format
 - `command`:  this API here to send command on light and thermostat devices
 
 To get some example, take a look at the tests
