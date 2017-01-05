@@ -4,7 +4,7 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import types
-from unittest.mock import MagicMock
+from orange_datashare_test import mock
 
 from orange_datashare.client import DatashareClient
 
@@ -19,7 +19,7 @@ def mock_class(clazz):
                     for attribute_name in dir(mother_class):
                         attribute = getattr(mother_class, attribute_name)
                         if isinstance(attribute, types.MethodType) or isinstance(attribute, types.FunctionType):
-                            setattr(self, attribute_name, MagicMock())
+                            setattr(self, attribute_name, mock.MagicMock())
 
         clazz.__bases__ = (MockClass,)
         setattr(clazz, 'CLASS_MOCKED', True)

@@ -4,7 +4,7 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import json
-from http.client import OK
+from orange_datashare.imported import OK
 from unittest import TestCase
 
 from orange_datashare.command import CommandApi, ThermostatMode

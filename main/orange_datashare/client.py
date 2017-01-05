@@ -6,7 +6,7 @@ license which can be found in the file 'LICENSE' in this package distribution
 
 import json
 import logging
-from http.client import UNAUTHORIZED
+from orange_datashare.imported import UNAUTHORIZED
 
 from oauth2_client.credentials_manager import CredentialManager, ServiceInformation
 

@@ -3,7 +3,7 @@ Copyright (C) 2016 Orange
 This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
-from http.client import ACCEPTED
+from orange_datashare.imported import ACCEPTED
 
 from orange_datashare.abstract_api import AbstractApi
 

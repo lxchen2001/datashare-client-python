@@ -5,7 +5,7 @@ license which can be found in the file 'LICENSE' in this package distribution
 """
 import sys
 import unittest
-from unittest import mock
+from orange_datashare_test import mock
 
 import orange_datashare.main as main
 from orange_datashare.command import ThermostatMode

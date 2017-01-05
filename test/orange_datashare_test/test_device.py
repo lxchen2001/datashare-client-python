@@ -4,7 +4,7 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import json
-from http.client import OK, NOT_FOUND
+from orange_datashare.imported import OK, NOT_FOUND
 from unittest import TestCase
 
 from orange_datashare.client import InvalidStatusCode

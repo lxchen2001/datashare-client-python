@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 
 from setuptools import setup, find_packages
 
@@ -21,6 +22,9 @@ if __version__ is None:
 def purge_sub_dir(path):
     shutil.rmtree(os.path.join(os.path.dirname(__file__), path))
 
+requirements = [requirement.rstrip(' \r\n') for requirement in open('requirements.txt').readlines()]
+if sys.version_info.major == 2:
+    requirements.append("enum34==1.1.6")
 
 setup(name=package_name,
       version=__version__,

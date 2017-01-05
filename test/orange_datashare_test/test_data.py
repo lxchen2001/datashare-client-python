@@ -4,7 +4,7 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import json
-from http.client import OK, ACCEPTED
+from orange_datashare.imported import OK, ACCEPTED
 from unittest import TestCase
 
 from orange_datashare.data import DataApi
@@ -32,7 +32,6 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertIsNotNone(streams)
         self.assertIsInstance(streams, list)
         self.assertEqual(2, len(streams))
-        self.assertIsInstance(streams[0], str)
 
     def test_get_succeed(self):
         self.client.get.return_value = mock_api_response('/api/v2/users/-/data/indoor/air/temperature',
