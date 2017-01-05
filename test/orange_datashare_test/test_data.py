@@ -22,7 +22,7 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.data = DataApi(self.client)
 
     def test_list_streams(self):
-        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/timeseries',
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data',
                                                          OK,
                                                          None,
                                                          'data', 'GET_response.json')
