@@ -9,7 +9,7 @@ from orange_datashare.imported import ACCEPTED
 
 class DataApi(AbstractApi):
     def list_streams(self, user_id):
-        return self.client._get('/api/v2/users/%s/data' % user_id)
+        return self.client._get('/api/v2/users/%s/data/timeseries' % user_id)
 
     def get_data(self, user_id, stream, **params):
         return self.client._get('/api/v2/users/%s/data/timeseries%s' % (user_id, stream), params=params)
