@@ -3,6 +3,4 @@ test/sandbox.py
 *.pyc
 build/
 dist/
-orange_datasharte.egg-info/
-
-
+orange_datashare.egg-info/
