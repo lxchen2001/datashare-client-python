@@ -9,6 +9,7 @@ from argparse import ArgumentParser, Action
 
 from orange_datashare.command_line_client import load_client
 from orange_datashare.thermostat import ThermostatMode
+from orange_datashare import __version__
 
 _logger = logging.getLogger(__name__)
 
@@ -26,8 +27,9 @@ class StorePositional(Action):
 
 def main():
     parser = ArgumentParser(add_help=True)
-    parser.add_argument('--verbose', action='store_true', dest='verbose', default=False,
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
                         help='Set default log to DEBUG')
+    parser.add_argument('-V', '--version', action='version', version=__version__)
     commands = parser.add_subparsers(help='commands', dest='action')
 
     # Connections
