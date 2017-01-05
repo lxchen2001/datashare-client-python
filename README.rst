@@ -1,9 +1,9 @@
 Orange Cloud python client
 ==========================
 .. image:: https://img.shields.io/pypi/v/orange-datashare.svg
-:target: https://pypi.python.org/pypi/orange-datashare
+    :target: https://pypi.python.org/pypi/orange-datashare
 .. image:: https://img.shields.io/github/license/Orange-OpenSource/datashare-client-python.svg
-	:target: https://raw.githubusercontent.com/Orange-OpenSource/datashare-client-python/master/LICENSE
+    :target: https://raw.githubusercontent.com/Orange-OpenSource/datashare-client-python/master/LICENSE
 
 This library is a python implementation of the `orange datashare <https://developer.orange.com/apis/discover-datashare/>`_
 It brings:
