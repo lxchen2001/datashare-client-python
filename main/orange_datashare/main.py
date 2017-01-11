@@ -8,6 +8,7 @@ import logging
 from argparse import ArgumentParser, Action
 
 from orange_datashare import __version__
+from orange_datashare.data import StatsFunc
 from orange_datashare.command import ThermostatMode
 from orange_datashare.command_line_client import load_client
 
@@ -79,6 +80,9 @@ def main():
     sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
     sub_parser.add_argument('data', action=StorePositional, type=str,
                             help='The json representation of the data')
+    sub_parser = commands.add_parser('get_stats', help='Get data statistics for a stream')
+    sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
+    sub_parser.add_argument('func', action=StorePositional, type=str, help='Stats func')
 
     # Light
     sub_parser = commands.add_parser('set_light_state', help='Set light state')
@@ -143,6 +147,8 @@ def main():
     command_mapper["write_data"] = lambda c: c.data.write_data("me",
                                                                arguments.stream,
                                                                json.loads(arguments.data))
+    command_mapper["get_stats"] = lambda c: c.data.get_stats("me", arguments.stream,
+                                                             getattr(StatsFunc, arguments.func.upper()))
 
     # Light
     command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
