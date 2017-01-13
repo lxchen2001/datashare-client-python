@@ -8,6 +8,7 @@ import unittest
 from orange_datashare_test import mock
 
 import orange_datashare.main as main
+from orange_datashare.data import StatsFunc
 from orange_datashare.command import ThermostatMode
 
 
@@ -130,6 +131,14 @@ class TestMain(unittest.TestCase):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
         fake_client.data.write_data.assert_called_with('me', '/indoor/air/temperature', dict(key="value"))
+
+    @mock.patch.object(sys, 'argv', ['main', 'get_stats', '/indoor/air/temperature', 'ALL'])
+    @mock.patch('orange_datashare.main.load_client')
+    def test_get_data(self, mock_client_loader):
+        fake_client = self._configure_mock_client(mock_client_loader)
+        main.main()
+        fake_client.data.get_stats.assert_called_with('me', '/indoor/air/temperature', StatsFunc.ALL)
+
 
     @mock.patch.object(sys, 'argv', ['main', 'set_light_state', 'light-udi', 'on', "#FFDDEE"])
     @mock.patch('orange_datashare.main.load_client')
