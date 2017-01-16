@@ -119,6 +119,8 @@ class DatashareClient(CredentialManager):
         else:
             try:
                 body = response.json()
-            except Exception:
+            except BaseException as ex:
+                _logger.warning('_check_response - response body is not json: %s - %s', type(ex), str(ex),
+                                exc_info=True)
                 body = response.text
             raise InvalidStatusCode(response.status_code, body)
