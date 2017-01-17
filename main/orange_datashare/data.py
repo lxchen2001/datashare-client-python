@@ -35,8 +35,8 @@ class DataApi(AbstractApi):
     def get_stats(self, user_id, stream, stats_func=StatsFunc.ALL, **params):
         return self.client._get('/api/v2/users/%s/data/stats/%s%s' % (user_id, stats_func.value, stream), params=params)
 
-    def get_summary(self, user_id, stream, **params):
-        return self.client._get('/api/v2/users/%s/data/summary%s' % (user_id, stream), params=params)
+    def get_summaries(self, user_id, stream, **params):
+        return self.client._get('/api/v2/users/%s/data/summaries%s' % (user_id, stream), params=params)
 
 
 class DataApiV1(AbstractApi):
@@ -55,6 +55,6 @@ class DataApiV1(AbstractApi):
     def get_stats(self, user_id, stream, stats_func=StatsFunc.ALL, **params):
         raise NotImplementedError()
 
-    def get_summary(self, user_id, stream, **params):
+    def get_summaries(self, user_id, stream, **params):
         raise NotImplementedError()
 
