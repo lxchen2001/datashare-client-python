@@ -28,6 +28,8 @@ class StorePositional(Action):
 
 def main():
     parser = ArgumentParser(add_help=True)
+    parser.add_argument('-t', '--target', action='store', dest='target', default='https://datashare.orange.com',
+                        help='Set server target. Default production: https://datashare.orange.com')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
                         help='Set default log to DEBUG')
     parser.add_argument('-V', '--version', action='version', version=__version__)
@@ -168,7 +170,7 @@ def main():
                                                                                     arguments.temperature,
                                                                                     arguments.end_date)
 
-    with load_client() as client:
+    with load_client(arguments.target) as client:
         if arguments.action is not None:
             try:
                 result = command_mapper[arguments.action](client)
