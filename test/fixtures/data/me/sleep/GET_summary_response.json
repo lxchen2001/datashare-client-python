@@ -1,0 +1,10 @@
+[
+  {
+    "links": {"timeseries": "/users/me/data/timeseries/me/sleep?filter={\"value\":{\"start\":\"2017-01-01T22:30:00Z\"}}"},
+    "startDate": "2017-01-01T22:30:00Z",
+    "totalDuration": 28800,
+    "awakeDuration": 1800,
+    "lightDuration": 9000,
+    "deepDuration": 18000
+  }
+]
