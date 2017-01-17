@@ -8,9 +8,9 @@ import logging
 from argparse import ArgumentParser, Action
 
 from orange_datashare import __version__
-from orange_datashare.data import StatsFunc
 from orange_datashare.command import ThermostatMode
 from orange_datashare.command_line_client import load_client
+from orange_datashare.data import StatsField
 
 _logger = logging.getLogger(__name__)
 
@@ -84,7 +84,8 @@ def main():
                             help='The json representation of the data')
     sub_parser = commands.add_parser('get_stats', help='Get data statistics for a stream')
     sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
-    sub_parser.add_argument('func', action=StorePositional, type=str, help='Stats func')
+    sub_parser.add_argument('fields', metavar='N', type=str, nargs='*',
+                            help='Stats fields to be returned (default ALL)')
 
     sub_parser = commands.add_parser('get_summaries', help='Get data summaries for a stream')
     sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
@@ -153,7 +154,9 @@ def main():
                                                                arguments.stream,
                                                                json.loads(arguments.data))
     command_mapper["get_stats"] = lambda c: c.data.get_stats("me", arguments.stream,
-                                                             getattr(StatsFunc, arguments.func.upper()))
+                                                             [getattr(StatsField, field.upper())
+                                                              for field in arguments.fields]
+                                                             )
 
     command_mapper["get_summaries"] = lambda c: c.data.get_summaries("me", arguments.stream)
 
