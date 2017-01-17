@@ -77,3 +77,25 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertEqual(20, stats[0]["max"])
         self.assertEqual(10, stats[0]["avg"])
         self.assertEqual(30, stats[0]["sum"])
+
+
+    def test_get_summary(self):
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/summary/me/sleep',
+                                                         OK,
+                                                         None,
+                                                         'data', 'me', 'sleep',
+                                                         'GET_summary_response.json')
+
+        summaries = self.data.get_summary('-', '/me/sleep')
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict())
+        self.assertIsNotNone(summaries)
+        self.assertIsInstance(summaries, list)
+
+        summary = summaries[0]
+
+        self.assertEqual("2017-01-01T22:30:00Z", summary["startDate"])
+        self.assertEqual(28800, summary["totalDuration"])
+        self.assertEqual(1800, summary["awakeDuration"])
+        self.assertEqual(9000, summary["lightDuration"])
+        self.assertEqual(18000, summary["deepDuration"])
+        self.assertEqual("/users/me/data/timeseries/me/sleep?filter={\"value\":{\"start\":\"2017-01-01T22:30:00Z\"}}", summary["links"]["timeseries"])

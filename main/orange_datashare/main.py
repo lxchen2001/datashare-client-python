@@ -84,6 +84,9 @@ def main():
     sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
     sub_parser.add_argument('func', action=StorePositional, type=str, help='Stats func')
 
+    sub_parser = commands.add_parser('get_summary', help='Get data summary for a stream')
+    sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
+
     # Light
     sub_parser = commands.add_parser('set_light_state', help='Set light state')
     sub_parser.add_argument('light_udi', action=StorePositional, type=str, help='Light udi')
@@ -149,6 +152,8 @@ def main():
                                                                json.loads(arguments.data))
     command_mapper["get_stats"] = lambda c: c.data.get_stats("me", arguments.stream,
                                                              getattr(StatsFunc, arguments.func.upper()))
+
+    command_mapper["get_summary"] = lambda c: c.data.get_summary("me", arguments.stream)
 
     # Light
     command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
