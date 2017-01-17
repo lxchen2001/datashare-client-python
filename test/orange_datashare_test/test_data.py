@@ -79,14 +79,14 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertEqual(30, stats[0]["sum"])
 
 
-    def test_get_summary(self):
-        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/summary/me/sleep',
+    def test_get_summaries(self):
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/summaries/me/sleep',
                                                          OK,
                                                          None,
                                                          'data', 'me', 'sleep',
-                                                         'GET_summary_response.json')
+                                                         'GET_summaries_response.json')
 
-        summaries = self.data.get_summary('-', '/me/sleep')
+        summaries = self.data.get_summaries('-', '/me/sleep')
         self.client.get.assert_called_with(self.client.get.return_value.url, params=dict())
         self.assertIsNotNone(summaries)
         self.assertIsInstance(summaries, list)

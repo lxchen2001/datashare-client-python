@@ -139,12 +139,12 @@ class TestMain(unittest.TestCase):
         main.main()
         fake_client.data.get_stats.assert_called_with('me', '/indoor/air/temperature', StatsFunc.ALL)
 
-    @mock.patch.object(sys, 'argv', ['main', 'get_summary', '/me/sleep'])
+    @mock.patch.object(sys, 'argv', ['main', 'get_summaries', '/me/sleep'])
     @mock.patch('orange_datashare.main.load_client')
     def test_get_summary(self, mock_client_loader):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
-        fake_client.data.get_summary.assert_called_with('me', '/me/sleep')
+        fake_client.data.get_summaries.assert_called_with('me', '/me/sleep')
 
     @mock.patch.object(sys, 'argv', ['main', 'set_light_state', 'light-udi', 'on', "#FFDDEE"])
     @mock.patch('orange_datashare.main.load_client')
