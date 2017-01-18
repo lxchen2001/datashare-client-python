@@ -7,7 +7,7 @@ import json
 from orange_datashare.imported import OK, ACCEPTED
 from unittest import TestCase
 
-from orange_datashare.data import DataApi
+from orange_datashare.data import DataApi, StatsField
 
 from orange_datashare_test.abstract_test_case import AbstractTestCase
 from orange_datashare_test.fake_requests import mock_api_response, load_resource_file
@@ -39,7 +39,8 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.client.get.return_value = mock_api_response('/api/v2/users/-/data/timeseries/indoor/air/temperature',
                                                          OK,
                                                          None,
-                                                         'data', 'indoor', 'air', 'temperature', 'GET_response.json')
+                                                         'data', 'timeseries', 'indoor', 'air', 'temperature',
+                                                         'GET_response.json')
 
         data = self.data.get_data('-', '/indoor/air/temperature', pageSize=1, pageNumber=0,
                                   search='metadata.device=udi')
@@ -55,20 +56,21 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.client.post.return_value = mock_api_response('/api/v2/users/-/data/timeseries/indoor/air/temperature',
                                                           ACCEPTED,
                                                           None,
-                                                          'data', 'indoor', 'air', 'temperature', 'GET_response.json')
+                                                          'data', 'timeseries', 'indoor', 'air', 'temperature',
+                                                          'GET_response.json')
         request = json.loads(load_resource_file('data', 'indoor', 'air', 'temperature', 'POST_request.json'))
         self.data.write_data('-', '/indoor/air/temperature', request)
         self.client.post.assert_called_with(self.client.post.return_value.url, data=None, json=request)
 
     def test_get_all_stats(self):
-        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/stats/all/indoor/air/temperature',
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/stats/indoor/air/temperature',
                                                          OK,
                                                          None,
-                                                         'data', 'indoor', 'air', 'temperature',
-                                                         'GET_all_stats_response.json')
+                                                         'data', 'stats', 'indoor', 'air', 'temperature',
+                                                         'GET_response.json')
 
-        stats = self.data.get_stats('-', '/indoor/air/temperature')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict())
+        stats = self.data.get_stats('-', '/indoor/air/temperature', fields=[StatsField.AVG, StatsField.MIN])
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(fields='avg,min'))
         self.assertIsNotNone(stats)
         self.assertIsInstance(stats, list)
         self.assertEqual("2015-01-02T08:00:00Z", stats[0]["date"])
@@ -83,8 +85,8 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.client.get.return_value = mock_api_response('/api/v2/users/-/data/summaries/me/sleep',
                                                          OK,
                                                          None,
-                                                         'data', 'me', 'sleep',
-                                                         'GET_summaries_response.json')
+                                                         'data', 'summaries', 'me', 'sleep',
+                                                         'GET_response.json')
 
         summaries = self.data.get_summaries('-', '/me/sleep')
         self.client.get.assert_called_with(self.client.get.return_value.url, params=dict())

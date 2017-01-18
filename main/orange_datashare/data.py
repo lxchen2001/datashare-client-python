@@ -9,12 +9,12 @@ from orange_datashare.abstract_api import AbstractApi
 from orange_datashare.imported import ACCEPTED
 
 
-class StatsFunc(Enum):
+class StatsField(Enum):
     COUNT = "count"
-    AVERAGE = "avg"
+    AVG = "avg"
     SUM = "sum"
-    MINIMUM = "min"
-    MAXIMUM = "max"
+    MIN = "min"
+    MAX = "max"
     ALL = "all"
 
 
@@ -32,8 +32,10 @@ class DataApi(AbstractApi):
             expected_status=ACCEPTED
         )
 
-    def get_stats(self, user_id, stream, stats_func=StatsFunc.ALL, **params):
-        return self.client._get('/api/v2/users/%s/data/stats/%s%s' % (user_id, stats_func.value, stream), params=params)
+    def get_stats(self, user_id, stream, fields=None, **params):
+        if fields is not None and len(fields) > 0:
+            params['fields']=','.join([field.value for field in fields])
+        return self.client._get('/api/v2/users/%s/data/stats%s' % (user_id, stream), params=params)
 
     def get_summaries(self, user_id, stream, **params):
         return self.client._get('/api/v2/users/%s/data/summaries%s' % (user_id, stream), params=params)
@@ -52,7 +54,7 @@ class DataApiV1(AbstractApi):
             expected_status=ACCEPTED
         )
 
-    def get_stats(self, user_id, stream, stats_func=StatsFunc.ALL, **params):
+    def get_stats(self, user_id, stream, stats_func=StatsField.ALL, **params):
         raise NotImplementedError()
 
     def get_summaries(self, user_id, stream, **params):
