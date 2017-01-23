@@ -22,9 +22,9 @@ _logger = logging.getLogger(__name__)
 
 class _CommandClient(DatashareClient):
     def __init__(self, target, client_id, client_secret, scopes, skip_ssl_verification):
+        self.ENDPOINT = target
         self.PROXIES = dict(http=os.environ.get('http_proxy', ''), https=os.environ.get('https_proxy', ''))
         super(_CommandClient, self).__init__(client_id, client_secret, scopes, skip_ssl_verification)
-        self.ENDPOINT = target
 
     def set_tokens(self, access_token, refresh_token):
         self.refresh_token = refresh_token
@@ -35,13 +35,9 @@ class _CommandClient(DatashareClient):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type == OAuthError:
-            _logger.error('OAuth error. Configuration will be erased')
-            os.remove(_configuration_file)
-        else:
-            self.save_configuration()
+        self.save_configuration(exc_type != OAuthError)
 
-    def save_configuration(self):
+    def save_configuration(self, save_current=True):
         try:
             with open(_configuration_file, 'r') as f:
                 existing_configuration = json.load(f)
@@ -50,20 +46,23 @@ class _CommandClient(DatashareClient):
         except:
             existing_configuration = dict()
         with open(_configuration_file, 'w') as f:
-            access_token = None
-            if self._session is not None:
-                authorization = self._session.headers.get('Authorization')
-                if authorization is not None:
-                    access_token = authorization[len('Bearer '):]
-            configuration = dict(client_id=self.service_information.client_id,
-                                 client_secret=self.service_information.client_secret,
-                                 scopes=self.service_information.scopes,
-                                 skip_ssl_verifications=self.service_information.skip_ssl_verifications)
-            if self.refresh_token is not None:
-                configuration['refresh_token'] = self.refresh_token
-            if access_token is not None:
-                configuration['access_token'] = access_token
-            existing_configuration[self.ENDPOINT] = configuration
+            if save_current:
+                access_token = None
+                if self._session is not None:
+                    authorization = self._session.headers.get('Authorization')
+                    if authorization is not None:
+                        access_token = authorization[len('Bearer '):]
+                configuration = dict(client_id=self.service_information.client_id,
+                                     client_secret=self.service_information.client_secret,
+                                     scopes=self.service_information.scopes,
+                                     skip_ssl_verifications=self.service_information.skip_ssl_verifications)
+                if self.refresh_token is not None:
+                    configuration['refresh_token'] = self.refresh_token
+                if access_token is not None:
+                    configuration['access_token'] = access_token
+                existing_configuration[self.ENDPOINT] = configuration
+            elif self.ENDPOINT in existing_configuration:
+                del existing_configuration[self.ENDPOINT]
             json.dump(existing_configuration, f, indent=1)
 
 

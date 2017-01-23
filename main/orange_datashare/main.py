@@ -164,7 +164,8 @@ def main():
     command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
                                                                             [arguments.light_udi],
                                                                             arguments.state.lower() == "on",
-                                                                            arguments.color)
+                                                                            arguments.color if len(arguments.color) > 0
+                                                                            else None)
 
     # Thermostat
     command_mapper["set_thermostat_mode"] = lambda c: c.command.set_thermostat_mode("me", [arguments.thermostat_udi],
