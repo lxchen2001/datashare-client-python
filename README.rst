@@ -101,6 +101,11 @@ To run the client, enter the following command :
 At first execution, it will ask you questions.
 Please note that your credentials won't be saved on your disk: only tokens will be kept for further use.
 
+License
+-------
+`BSD 3-clause <https://raw.githubusercontent.com/Orange-OpenSource/datashare-client-python/master/LICENSE>`_
+
+
 Issues and contributions
 ------------------------
 Please submit issue/pull request.
