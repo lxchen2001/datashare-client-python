@@ -1,4 +1,4 @@
-Orange Cloud python client
+Orange Datashare python client
 ==========================
 .. image:: https://img.shields.io/pypi/v/orange-datashare.svg
     :target: https://pypi.python.org/pypi/orange-datashare
