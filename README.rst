@@ -5,7 +5,7 @@ Orange Datashare python client
 .. image:: https://img.shields.io/github/license/Orange-OpenSource/datashare-client-python.svg
     :target: https://raw.githubusercontent.com/Orange-OpenSource/datashare-client-python/master/LICENSE
 
-This library is a python implementation of the `orange datashare <https://developer.orange.com/apis/discover-datashare/>`_
+This library is a python client for the `orange datashare <https://developer.orange.com/apis/datashare/>`_
 It brings:
 
 - an `api <#api>`_ to build interact with datashare api
