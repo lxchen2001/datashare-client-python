@@ -92,24 +92,33 @@ class DatashareClient(CredentialManager):
     def _get(self, uri, params=None, **kwargs):
         _logger.debug('_get - %s - params=%s', uri, params)
         return DatashareClient._check_response(
-            self.get('%s%s' % (self.ENDPOINT, uri), params=params, **kwargs)
+            self.get('%s%s' % (self.ENDPOINT, uri), params=params, **self._add_encoding(**kwargs))
         ).json()
 
     def _post(self, uri, data=None, json=None, **kwargs):
         _logger.debug('_post - %s - data=%s - json=%s', uri, data, json)
-        return self.post('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **kwargs)
+        return self.post('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **self._add_encoding(**kwargs))
 
     def _put(self, uri, data=None, json=None, **kwargs):
         _logger.debug('_put - %s - data=%s - json=%s', uri, data, json)
-        return self.put('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **kwargs)
+        return self.put('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **self._add_encoding(**kwargs))
 
     def _patch(self, uri, data=None, json=None, **kwargs):
         _logger.debug('_patch - %s - data=%s - json=%s', uri, data, json)
-        return self.patch('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **kwargs)
+        return self.patch('%s%s' % (self.ENDPOINT, uri), data=data, json=json, **self._add_encoding(**kwargs))
 
     def _delete(self, uri, **kwargs):
         _logger.debug('_delete - %s', uri)
-        return self.delete('%s%s' % (self.ENDPOINT, uri), **kwargs)
+        return self.delete('%s%s' % (self.ENDPOINT, uri), **self._add_encoding(**kwargs))
+
+    @staticmethod
+    def _add_encoding(**kwargs):
+        headers = kwargs.get('headers', None)
+        if headers is None:
+            headers = dict()
+            kwargs['headers'] = headers
+        headers['Accept'] = 'application/json'
+        return kwargs
 
     @staticmethod
     def _check_response(response, expected_status=None):

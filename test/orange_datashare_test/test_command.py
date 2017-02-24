@@ -28,7 +28,8 @@ class CommandApiTest(TestCase, AbstractTestCase):
                                                          'thermostat', 'mode', 'PUT_response.json')
         expected_request = json.loads(load_resource_file('thermostat', 'mode', expected_file))
         self.command.set_thermostat_mode('-', ['thermostat-udi'], mode, temperature, end_date)
-        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=expected_request)
+        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=expected_request,
+                                           headers=self.DEFAULT_HEADERS)
 
     def _test_light_state(self, color, expected_file):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/commands/light/state',
@@ -37,7 +38,8 @@ class CommandApiTest(TestCase, AbstractTestCase):
                                                          'light', 'state', 'PUT_response.json')
         expected_request = json.loads(load_resource_file('light', 'state', expected_file))
         self.command.set_light_state('-', ['light-udi'], True, color)
-        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=expected_request)
+        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=expected_request,
+                                           headers=self.DEFAULT_HEADERS)
 
     def test_set_thermostat_mode_with_timestamp(self):
         self._test_thermostat_mode(ThermostatMode.ANTIFREEZE, 19.0, 1482316511.7452345, 'PUT_antifreeze_request.json')

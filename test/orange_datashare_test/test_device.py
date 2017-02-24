@@ -29,7 +29,7 @@ class DeviceApiTest(TestCase, AbstractTestCase):
                                                          'devices', 'GET_response.json')
 
         devices = self.devices.list_devices('-', 'connection-id')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params={})
+        self.client.get.assert_called_with(self.client.get.return_value.url, params={}, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(devices)
         self.assertIsInstance(devices, list)
         self.assertEqual(1, len(devices))
@@ -44,7 +44,7 @@ class DeviceApiTest(TestCase, AbstractTestCase):
                                                          'devices', 'GET_{id}_response.json')
 
         device = self.devices.get_device('-', 'connection-id', 'device-id')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=None)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=None, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(device)
         self.assertIsInstance(device, dict)
         self.assertEqual("carpetcorp:icarpet3@02:00:00:12:e8:d2", device["udi"])
@@ -67,7 +67,8 @@ class DeviceApiTest(TestCase, AbstractTestCase):
                                                       devices=request)
         self.client.put.assert_called_with(self.client.put.return_value.url,
                                            data=None,
-                                           json=request)
+                                           json=request,
+                                           headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(devices)
         self.assertIsInstance(devices, list)
         self.assertEqual(1, len(devices))
@@ -86,7 +87,8 @@ class DeviceApiTest(TestCase, AbstractTestCase):
                                                          devices=request)
         self.client.patch.assert_called_with(self.client.patch.return_value.url,
                                              data=None,
-                                             json=request)
+                                             json=request,
+                                             headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(devices)
         self.assertIsInstance(devices, list)
         self.assertEqual(2, len(devices))

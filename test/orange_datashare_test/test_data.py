@@ -30,7 +30,8 @@ class DataApiTest(TestCase, AbstractTestCase):
                                                          'data', 'GET_response.json')
 
         streams = self.data.list_streams('-')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=None)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=None,
+                                           headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(streams)
         self.assertIsInstance(streams, list)
         self.assertEqual(2, len(streams))
@@ -46,7 +47,8 @@ class DataApiTest(TestCase, AbstractTestCase):
                                   search='metadata.device=udi')
         self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(pageNumber=0,
                                                                                          pageSize=1,
-                                                                                         search='metadata.device=udi'))
+                                                                                         search='metadata.device=udi'),
+                                           headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(data)
         self.assertIsInstance(data, list)
         self.assertEqual("2015-01-02T08:00:00Z", data[0]["at"])
@@ -60,7 +62,8 @@ class DataApiTest(TestCase, AbstractTestCase):
                                                           'GET_response.json')
         request = json.loads(load_resource_file('data', 'indoor', 'air', 'temperature', 'POST_request.json'))
         self.data.write_data('-', '/indoor/air/temperature', request)
-        self.client.post.assert_called_with(self.client.post.return_value.url, data=None, json=request)
+        self.client.post.assert_called_with(self.client.post.return_value.url, data=None, json=request,
+                                            headers=self.DEFAULT_HEADERS)
 
     def test_get_all_stats(self):
         self.client.get.return_value = mock_api_response('/api/v2/users/-/data/stats/indoor/air/temperature',
@@ -70,7 +73,8 @@ class DataApiTest(TestCase, AbstractTestCase):
                                                          'GET_response.json')
 
         stats = self.data.get_stats('-', '/indoor/air/temperature', fields=[StatsField.AVG, StatsField.MIN])
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(fields='avg,min'))
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(fields='avg,min'),
+                                           headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(stats)
         self.assertIsInstance(stats, list)
         self.assertEqual("2015-01-02T08:00:00Z", stats[0]["date"])
@@ -89,7 +93,8 @@ class DataApiTest(TestCase, AbstractTestCase):
                                                          'GET_response.json')
 
         summaries = self.data.get_summaries('-', '/me/sleep')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict())
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(),
+                                           headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(summaries)
         self.assertIsInstance(summaries, list)
 

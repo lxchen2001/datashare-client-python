@@ -28,7 +28,7 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
                                                          'connections', 'GET_response.json')
 
         connections = self.connections.list_connections('-')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params={})
+        self.client.get.assert_called_with(self.client.get.return_value.url, params={}, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(connections)
         self.assertIsInstance(connections, list)
         self.assertEqual(1, len(connections))
@@ -43,7 +43,7 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
                                                          'connections', 'GET_{id}_response.json')
 
         connection = self.connections.get_connection('-', 'connection-id')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=None)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=None, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(connection)
         self.assertIsInstance(connection, dict)
         self.assertEqual("carpetcorp", connection["connectorName"])
@@ -65,7 +65,8 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
         connection = self.connections.create_connection('-', 'test-connector', 'test-key')
         self.client.post.assert_called_with(self.client.post.return_value.url,
                                             data=None,
-                                            json=dict(connectorName='test-connector', key='test-key'))
+                                            json=dict(connectorName='test-connector', key='test-key'),
+                                            headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(connection)
         self.assertIsInstance(connection, dict)
         self.assertEqual("test-connector", connection["connectorName"])
@@ -77,7 +78,7 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
                                                             None)
 
         self.connections.delete_connection('-', 'connection-id')
-        self.client.delete.assert_called_with(self.client.delete.return_value.url)
+        self.client.delete.assert_called_with(self.client.delete.return_value.url,  headers=self.DEFAULT_HEADERS)
 
     def test_update(self):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/connections/connection-id',
@@ -92,4 +93,5 @@ class ConnectionApiTest(TestCase, AbstractTestCase):
         self.assertEqual("NONE", connection["error"])
         self.client.put.assert_called_with(self.client.put.return_value.url,
                                            data=None,
-                                           json=dict(status='WORKING', reason='NONE'))
+                                           json=dict(status='WORKING', reason='NONE'),
+                                           headers=self.DEFAULT_HEADERS)

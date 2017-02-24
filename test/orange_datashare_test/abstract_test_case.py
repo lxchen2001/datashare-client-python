@@ -32,6 +32,8 @@ class AbstractTestCase(object):
 
     SCOPES = ['scope_test_1', 'scope_test_2']
 
+    DEFAULT_HEADERS = dict(Accept='application/json')
+
     @classmethod
     def mock_client_class(cls):
         mock_class(DatashareClient)

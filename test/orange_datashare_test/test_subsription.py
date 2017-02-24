@@ -29,7 +29,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          'subscriptions', 'GET_response.json')
 
         subscriptions = self.subscription.list_subscriptions('-')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params={})
+        self.client.get.assert_called_with(self.client.get.return_value.url, params={},  headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(subscriptions)
         self.assertIsInstance(subscriptions, list)
         self.assertEqual(1, len(subscriptions))
@@ -42,7 +42,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          'subscriptions', 'GET_{id}_response.json')
 
         subscription = self.subscription.get_subscription('-', 'subscription-key')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params=None)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=None, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(subscription)
         self.assertIsInstance(subscription, dict)
         self.assertEqual("sub_for_user_12345_to_temperatures", subscription["key"])
@@ -61,7 +61,8 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          'subscriptions', 'PUT_{key}_response.json')
         request = json.loads(load_resource_file('subscriptions', 'PUT_{key}_request.json'))
         self.subscription.set_subscription('-', 'subscription-key', request)
-        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=request)
+        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=request,
+                                           headers=self.DEFAULT_HEADERS)
 
     def test_remove_single(self):
         self.client.delete.return_value = mock_api_response('/api/v2/users/-/subscriptions/subscription-key',
@@ -69,7 +70,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                             None)
 
         self.subscription.remove_subscription('-', 'subscription-key')
-        self.client.delete.assert_called_with(self.client.delete.return_value.url)
+        self.client.delete.assert_called_with(self.client.delete.return_value.url, headers=self.DEFAULT_HEADERS)
 
     def test_remove_all(self):
         self.client.delete.return_value = mock_api_response('/api/v2/users/-/subscriptions',
@@ -77,4 +78,4 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                             None)
 
         self.subscription.remove_all_subscriptions('-')
-        self.client.delete.assert_called_with(self.client.delete.return_value.url)
+        self.client.delete.assert_called_with(self.client.delete.return_value.url, headers=self.DEFAULT_HEADERS)
