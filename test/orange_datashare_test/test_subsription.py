@@ -76,5 +76,5 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                             NO_CONTENT,
                                                             None)
 
-        self.subscription.remove_subscriptions('-')
+        self.subscription.remove_all_subscriptions('-')
         self.client.delete.assert_called_with(self.client.delete.return_value.url)

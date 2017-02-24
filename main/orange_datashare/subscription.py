@@ -20,7 +20,7 @@ class SubscriptionApi(AbstractApi):
             self.client._put('/api/v2/users/%s/subscriptions/%s' % (user_id, key), json=data),
             expected_status=CREATED)
 
-    def remove_subscriptions(self, user_id):
+    def remove_all_subscriptions(self, user_id):
         self.client._check_response(
             self.client._delete('/api/v2/users/%s/subscriptions' % user_id),
             expected_status=NO_CONTENT)
