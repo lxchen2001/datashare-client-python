@@ -54,9 +54,15 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
         with self.assertRaises(InvalidStatusCode):
             self.subscription.get_subscription('-', 'subscription-key')
 
-    def test_update(self):
+    def test_update_while_subscription_not_existing(self):
+        self._test_update(CREATED)
+
+    def test_update__while_subscription_existing(self):
+        self._test_update(OK)
+
+    def _test_update(self, status_returned):
         self.client.put.return_value = mock_api_response('/api/v2/users/-/subscriptions/subscription-key',
-                                                         CREATED,
+                                                         status_returned,
                                                          None,
                                                          'subscriptions', 'PUT_{key}_response.json')
         request = json.loads(load_resource_file('subscriptions', 'PUT_{key}_request.json'))

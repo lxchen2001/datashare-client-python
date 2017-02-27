@@ -34,7 +34,7 @@ class CommandApi(AbstractApi):
         return self.client._check_response(
             self.client._put('/api/v2/users/%s/commands/light/state' % user_id,
                              json=request),
-            expected_status=ACCEPTED
+            expected_status=(ACCEPTED,)
         ).json()
 
     def set_thermostat_mode(self, user_id, thermostat_udis, mode, temperature, end_date):
@@ -45,5 +45,5 @@ class CommandApi(AbstractApi):
                        target=dict(byUdi=thermostat_udis))
         return self.client._check_response(
             self.client._put('/api/v2/users/%s/commands/thermostat/mode' % user_id, json=request),
-            expected_status=ACCEPTED
+            expected_status=(ACCEPTED,)
         ).json()

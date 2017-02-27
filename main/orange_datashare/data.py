@@ -29,7 +29,7 @@ class DataApi(AbstractApi):
     def write_data(self, user_id, stream, data):
         self.client._check_response(
             self.client._post('/api/v2/users/%s/data/timeseries%s' % (user_id, stream), json=data),
-            expected_status=ACCEPTED
+            expected_status=(ACCEPTED,)
         )
 
     def get_stats(self, user_id, stream, fields=None, **params):
@@ -51,7 +51,7 @@ class DataApiV1(AbstractApi):
     def write_data(self, user_id, stream, data):
         self.client._check_response(
             self.client._post('/api/v1/users/%s/data%s' % (user_id, stream), json=data),
-            expected_status=ACCEPTED
+            expected_status=(ACCEPTED,)
         )
 
     def get_stats(self, user_id, stream, stats_func=StatsField.ALL, **params):

@@ -123,7 +123,7 @@ class DatashareClient(CredentialManager):
     @staticmethod
     def _check_response(response, expected_status=None):
         if expected_status is None and int(response.status_code / 100) == 2 or \
-                                expected_status is not None and int(response.status_code) == expected_status:
+                                expected_status is not None and response.status_code in expected_status:
             return response
         else:
             try:
