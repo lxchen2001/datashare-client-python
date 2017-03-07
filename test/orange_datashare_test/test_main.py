@@ -9,6 +9,7 @@ from orange_datashare_test import mock
 
 import orange_datashare.main as main
 from orange_datashare.data import StatsField
+from orange_datashare.subscription import Origin
 from orange_datashare.command import ThermostatMode
 
 
@@ -90,12 +91,15 @@ class TestMain(unittest.TestCase):
         main.main()
         fake_client.subscription.get_subscription.assert_called_with('me', 'key')
 
-    @mock.patch.object(sys, 'argv', ['main', 'set_subscription', 'key', '{"key": "value"}'])
+    @mock.patch.object(sys, 'argv', ['main', 'set_subscription', 'key', '/indoor/air/temperature',
+                                     'http://somewhere-over-the-rainbow', 'any', '{"key": "value"}'])
     @mock.patch('orange_datashare.main.load_client')
     def test_set_subscription(self, mock_client_loader):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
-        fake_client.subscription.set_subscription.assert_called_with('me', 'key', dict(key="value"))
+        fake_client.subscription.set_subscription.assert_called_with('me', 'key', '/indoor/air/temperature',
+                                                                     'http://somewhere-over-the-rainbow',
+                                                                     Origin.ANY, dict(key="value"))
 
     @mock.patch.object(sys, 'argv', ['main', 'remove_subscription', 'key'])
     @mock.patch('orange_datashare.main.load_client')

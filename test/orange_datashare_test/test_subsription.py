@@ -4,11 +4,11 @@ This software is distributed under the terms and conditions of the 'BSD 3'
 license which can be found in the file 'LICENSE' in this package distribution
 """
 import json
-from orange_datashare.imported import OK, NOT_FOUND, NO_CONTENT, CREATED
 from unittest import TestCase
 
 from orange_datashare.client import InvalidStatusCode
-from orange_datashare.subscription import SubscriptionApi
+from orange_datashare.imported import OK, NOT_FOUND, NO_CONTENT, CREATED
+from orange_datashare.subscription import SubscriptionApi, Origin
 from orange_datashare_test.abstract_test_case import AbstractTestCase
 from orange_datashare_test.fake_requests import mock_api_response, load_resource_file
 
@@ -29,7 +29,7 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          'subscriptions', 'GET_response.json')
 
         subscriptions = self.subscription.list_subscriptions('-')
-        self.client.get.assert_called_with(self.client.get.return_value.url, params={},  headers=self.DEFAULT_HEADERS)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params={}, headers=self.DEFAULT_HEADERS)
         self.assertIsNotNone(subscriptions)
         self.assertIsInstance(subscriptions, list)
         self.assertEqual(1, len(subscriptions))
@@ -66,7 +66,12 @@ class SubscriptionApiTest(TestCase, AbstractTestCase):
                                                          None,
                                                          'subscriptions', 'PUT_{key}_response.json')
         request = json.loads(load_resource_file('subscriptions', 'PUT_{key}_request.json'))
-        self.subscription.set_subscription('-', 'subscription-key', request)
+        self.subscription.set_subscription('-', 'subscription-key', '/indoor/air/temperature',
+                                           url='https://myhost/notification/callback?from=liveobjects',
+                                           origin=Origin.ANY,
+                                           filter=dict(metadata=dict(device='carpetcorp:icarpet3@02:00:00:12:e8:d2')
+                                                       )
+                                           )
         self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=request,
                                            headers=self.DEFAULT_HEADERS)
 
