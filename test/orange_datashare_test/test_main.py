@@ -165,6 +165,13 @@ class TestMain(unittest.TestCase):
         main.main()
         fake_client.command.set_light_state.assert_called_with('me', ['light-udi'], True, "#FFDDEE")
 
+    @mock.patch.object(sys, 'argv', ['main', 'set_light_state', 'light-udi', 'on'])
+    @mock.patch('orange_datashare.main.load_client')
+    def test_set_light_state_without_color(self, mock_client_loader):
+        fake_client = self._configure_mock_client(mock_client_loader)
+        main.main()
+        fake_client.command.set_light_state.assert_called_with('me', ['light-udi'], True, None)
+
     @mock.patch.object(sys, 'argv', ['main', 'set_thermostat_mode', 'thermostat-udi', 'antifreeze', '29.3',
                                      "2016-12-21T11:35:11.745Z"])
     @mock.patch('orange_datashare.main.load_client')
