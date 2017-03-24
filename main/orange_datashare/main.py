@@ -101,14 +101,16 @@ def main():
 
     # Light
     sub_parser = commands.add_parser('set_light_state', help='Set light state')
-    sub_parser.add_argument('light_udi', action=StorePositional, type=str, help='Light udi')
+    sub_parser.add_argument('light_udis', action=StorePositional, type=str,
+                            help='Light udi(s) comma-separated')
     sub_parser.add_argument('state', action=StorePositional, type=str, help='Light state (on/off)')
     sub_parser.add_argument('color', nargs='?', default=None, type=str, help='Light color (in hex format)')
     # sub_parser.add_argument('color', action=StorePositional, type=str, default="", help='Light color (in hex format)')
 
     # Thermostat
     sub_parser = commands.add_parser('set_thermostat_mode', help='Set thermostat mode')
-    sub_parser.add_argument('thermostat_udi', action=StorePositional, type=str, help='Thermostat udi')
+    sub_parser.add_argument('thermostat_udis', action=StorePositional, type=str,
+                            help='Thermostat udi(s) comma-separated')
     sub_parser.add_argument('mode', action=StorePositional, type=str,
                             help='Thermostat mode (%s)' % ', '.join(ThermostatMode.__members__.keys()))
     sub_parser.add_argument('temperature', action=StorePositional, type=float, help='Thermostat mode temperature')
@@ -178,12 +180,14 @@ def main():
 
     # Light
     command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
-                                                                            [arguments.light_udi],
+                                                                            arguments.light_udis.split(','),
                                                                             arguments.state.lower() == "on",
                                                                             arguments.color)
 
     # Thermostat
-    command_mapper["set_thermostat_mode"] = lambda c: c.command.set_thermostat_mode("me", [arguments.thermostat_udi],
+    command_mapper["set_thermostat_mode"] = lambda c: c.command.set_thermostat_mode("me",
+                                                                                    arguments.thermostat_udis
+                                                                                    .split(','),
                                                                                     getattr(ThermostatMode,
                                                                                             arguments.mode.upper()),
                                                                                     arguments.temperature,
