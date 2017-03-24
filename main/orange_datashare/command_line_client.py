@@ -14,17 +14,19 @@ from oauth2_client.credentials_manager import OAuthError
 
 from orange_datashare.client import DatashareClient
 
-_configuration_directory = os.path.join(os.path.expanduser('~'), '.datashare-client')
-_configuration_file = os.path.join(_configuration_directory, 'configuration.json')
+DEFAULT_CONFIGURATION_DIRECTORY = os.path.join(os.path.expanduser('~'), '.datashare-client')
+CONFIGURATION_FILE = 'configuration.json'
+_configuration_file = os.path.join(DEFAULT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE)
 
 _logger = logging.getLogger(__name__)
 
 
 class _CommandClient(DatashareClient):
-    def __init__(self, target, client_id, client_secret, scopes, skip_ssl_verification):
+    def __init__(self, target, client_id, client_secret, scopes, skip_ssl_verification, configuration_file):
         self.ENDPOINT = target
         self.PROXIES = dict(http=os.environ.get('http_proxy', ''), https=os.environ.get('https_proxy', ''))
         super(_CommandClient, self).__init__(client_id, client_secret, scopes, skip_ssl_verification)
+        self.configuration_file = configuration_file
 
     def set_tokens(self, access_token, refresh_token):
         self.refresh_token = refresh_token
@@ -39,13 +41,13 @@ class _CommandClient(DatashareClient):
 
     def save_configuration(self, save_current=True):
         try:
-            with open(_configuration_file, 'r') as f:
+            with open(self.configuration_file, 'r') as f:
                 existing_configuration = json.load(f)
                 if type(existing_configuration) is not dict:
                     existing_configuration = dict()
         except:
             existing_configuration = dict()
-        with open(_configuration_file, 'w') as f:
+        with open(self.configuration_file, 'w') as f:
             if save_current:
                 access_token = None
                 if self._session is not None:
@@ -84,30 +86,30 @@ def _init_oauth_process(client):
     client.init_with_authorize_code(redirect_uri=redirect_uri, code=code)
 
 
-def _init_client(target):
-    global _configuration_directory
-
+def _init_client(target, configuration_directory):
+    global CONFIGURATION_FILE
     client_id = _prompt('Client Id')
     client_secret = _prompt('Client Secret')
     scopes = _prompt('Scopes').split(' ')
 
     skip_ssl_verification = _prompt('Skip ssl verification <no/yes> [no]').lower() == 'yes'
-    if not os.path.exists(_configuration_directory):
-        os.mkdir(_configuration_directory, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-    client = _CommandClient(target, client_id, client_secret, scopes, skip_ssl_verification)
+    if not os.path.exists(configuration_directory):
+        os.mkdir(configuration_directory, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+    client = _CommandClient(target, client_id, client_secret, scopes, skip_ssl_verification,
+                            os.path.join(configuration_directory, CONFIGURATION_FILE))
     _init_oauth_process(client)
     # save first time, meaning configuration works
     client.save_configuration()
     return client
 
 
-def load_client(target):
-    global _configuration_file
+def load_client(target, configuration_directory):
     try:
-        with open(_configuration_file, 'r') as f:
+        configuration_file = os.path.join(configuration_directory, CONFIGURATION_FILE)
+        with open(configuration_file, 'r') as f:
             configurations = json.load(f)
             if type(configurations) is not dict or target not in configurations:
-                return _init_client(target)
+                return _init_client(target, configuration_directory)
             configuration = configurations[target]
             client_id = configuration.get('client_id')
             client_secret = configuration.get('client_secret')
@@ -116,8 +118,9 @@ def load_client(target):
             access_token = configuration.get('access_token')
             refresh_token = configuration.get('refresh_token')
             if client_id is None or client_secret is None or scopes is None:
-                return _init_client(target)
-            result = _CommandClient(target, client_id, client_secret, scopes, skip_ssl_verifications)
+                return _init_client(target, configuration_directory)
+            result = _CommandClient(target, client_id, client_secret, scopes, skip_ssl_verifications,
+                                    configuration_file)
             if refresh_token is not None:
                 # do not accept access without refresh token
                 if access_token is not None:
@@ -128,4 +131,4 @@ def load_client(target):
                 _init_oauth_process(result)
             return result
     except IOError:
-        return _init_client(target)
+        return _init_client(target, configuration_directory)

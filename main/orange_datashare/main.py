@@ -9,7 +9,7 @@ from argparse import ArgumentParser, Action
 
 from orange_datashare import __version__
 from orange_datashare.command import ThermostatMode
-from orange_datashare.command_line_client import load_client
+from orange_datashare.command_line_client import load_client, DEFAULT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE
 from orange_datashare.data import StatsField
 from orange_datashare.subscription import Origin
 
@@ -29,6 +29,10 @@ class StorePositional(Action):
 
 def main():
     parser = ArgumentParser(add_help=True)
+    parser.add_argument('-c', '--configuration_directory', action='store', dest='configuration_directory',
+                        default=DEFAULT_CONFIGURATION_DIRECTORY,
+                        help='Specify directory where the %s file is stored; Default is %s' %
+                             (CONFIGURATION_FILE, DEFAULT_CONFIGURATION_DIRECTORY))
     parser.add_argument('-t', '--target', action='store', dest='target', default='https://datashare.orange.com',
                         help='Set server target. Default production: https://datashare.orange.com')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False,
@@ -192,7 +196,7 @@ def main():
             except:
                 _logger.info(result)
 
-    with load_client(arguments.target) as client:
+    with load_client(arguments.target, arguments.configuration_directory) as client:
         if arguments.action is not None:
             try:
                 _print_result(command_mapper[arguments.action](client))
