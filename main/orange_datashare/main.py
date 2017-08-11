@@ -11,6 +11,7 @@ from orange_datashare import __version__
 from orange_datashare.command import ThermostatMode
 from orange_datashare.command_line_client import load_client, DEFAULT_CONFIGURATION_DIRECTORY, CONFIGURATION_FILE
 from orange_datashare.data import StatsField
+from orange_datashare.data import BoundariesSearchOption
 from orange_datashare.subscription import Origin
 
 _logger = logging.getLogger(__name__)
@@ -93,11 +94,16 @@ def main():
                             help='The json representation of the data')
     sub_parser = commands.add_parser('get_stats', help='Get data statistics for a stream')
     sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
-    sub_parser.add_argument('fields', metavar='N', type=str, nargs='*',
-                            help='Stats fields to be returned (default ALL)')
+    sub_parser.add_argument('fields', metavar='field', type=str, nargs='*',
+                            help='Stats fields to compute (%s) - default ALL' % ', '.join(StatsField.__members__.keys()))
 
-    sub_parser = commands.add_parser('get_summaries', help='Get data summaries for a stream')
-    sub_parser.add_argument('stream', action=StorePositional, type=str, help='Stream path')
+    sub_parser = commands.add_parser('get_summaries', help='Computes summaries of user activities')
+    sub_parser.add_argument('path', action=StorePositional, type=str, help='Summary path')
+
+    sub_parser = commands.add_parser('get_boundaries', help='Searches boundary values per stream per device')
+    sub_parser.add_argument('search', type=str, help='Boundary values to search (%s) - default LAST' % ', '.join(BoundariesSearchOption.__members__.keys()))
+    sub_parser.add_argument('paths', metavar='path', type=str, nargs='*',
+                            help='Stream paths to search on (default: all authorized paths)')
 
     # Light
     sub_parser = commands.add_parser('set_light_state', help='Set light state')
@@ -106,6 +112,12 @@ def main():
     sub_parser.add_argument('state', action=StorePositional, type=str, help='Light state (on/off)')
     sub_parser.add_argument('color', nargs='?', default=None, type=str, help='Light color (in hex format)')
     # sub_parser.add_argument('color', action=StorePositional, type=str, default="", help='Light color (in hex format)')
+
+    # Plug
+    sub_parser = commands.add_parser('set_plug_state', help='Set plug state')
+    sub_parser.add_argument('plug_udis', action=StorePositional, type=str,
+                            help='Plug udi(s) comma-separated')
+    sub_parser.add_argument('state', action=StorePositional, type=str, help='Plug state (on/off)')
 
     # Thermostat
     sub_parser = commands.add_parser('set_thermostat_mode', help='Set thermostat mode')
@@ -175,14 +187,21 @@ def main():
                                                              [getattr(StatsField, field.upper())
                                                               for field in arguments.fields]
                                                              )
-
-    command_mapper["get_summaries"] = lambda c: c.data.get_summaries("me", arguments.stream)
+    command_mapper["get_summaries"] = lambda c: c.data.get_summaries("me", arguments.path)
+    command_mapper["get_boundaries"] = lambda c: c.data.get_boundaries("me",
+                                                                       getattr(BoundariesSearchOption, arguments.search.upper()),
+                                                                       arguments.paths)
 
     # Light
     command_mapper["set_light_state"] = lambda c: c.command.set_light_state("me",
                                                                             arguments.light_udis.split(','),
                                                                             arguments.state.lower() == "on",
                                                                             arguments.color)
+
+    # Plug
+    command_mapper["set_plug_state"] = lambda c: c.command.set_plug_state("me",
+                                                                            arguments.plug_udis.split(','),
+                                                                            arguments.state.lower() == "on")
 
     # Thermostat
     command_mapper["set_thermostat_mode"] = lambda c: c.command.set_thermostat_mode("me",

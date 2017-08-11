@@ -9,6 +9,7 @@ from orange_datashare_test import mock
 
 import orange_datashare.main as main
 from orange_datashare.data import StatsField
+from orange_datashare.data import BoundariesSearchOption
 from orange_datashare.subscription import Origin
 from orange_datashare.command import ThermostatMode
 
@@ -158,12 +159,26 @@ class TestMain(unittest.TestCase):
         main.main()
         fake_client.data.get_summaries.assert_called_with('me', '/me/sleep')
 
+    @mock.patch.object(sys, 'argv', ['main', 'get_boundaries', 'both', '/me/sleep', '/indoor/air/temperature'])
+    @mock.patch('orange_datashare.main.load_client')
+    def test_get_boundaries(self, mock_client_loader):
+        fake_client = self._configure_mock_client(mock_client_loader)
+        main.main()
+        fake_client.data.get_boundaries.assert_called_with('me', BoundariesSearchOption.BOTH, ['/me/sleep', '/indoor/air/temperature'])
+
     @mock.patch.object(sys, 'argv', ['main', 'set_light_state', 'light-udi', 'on', "#FFDDEE"])
     @mock.patch('orange_datashare.main.load_client')
     def test_set_light_state(self, mock_client_loader):
         fake_client = self._configure_mock_client(mock_client_loader)
         main.main()
         fake_client.command.set_light_state.assert_called_with('me', ['light-udi'], True, "#FFDDEE")
+
+    @mock.patch.object(sys, 'argv', ['main', 'set_plug_state', 'plug-udi', 'on'])
+    @mock.patch('orange_datashare.main.load_client')
+    def test_set_plug_state(self, mock_client_loader):
+        fake_client = self._configure_mock_client(mock_client_loader)
+        main.main()
+        fake_client.command.set_plug_state.assert_called_with('me', ['plug-udi'], True)
 
     @mock.patch.object(sys, 'argv', ['main', 'set_light_state', 'light-udi-1,light-udi-2', 'on'])
     @mock.patch('orange_datashare.main.load_client')

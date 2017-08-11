@@ -37,6 +37,14 @@ class CommandApi(AbstractApi):
             expected_status=(ACCEPTED,)
         ).json()
 
+    def set_plug_state(self, user_id, plug_udis, on):
+        request = dict(params=dict(on=on), target=dict(byUdi=plug_udis))
+        return self.client._check_response(
+            self.client._put('/api/v2/users/%s/commands/plug/state' % user_id,
+                             json=request),
+            expected_status=(ACCEPTED,)
+        ).json()
+
     def set_thermostat_mode(self, user_id, thermostat_udis, mode, temperature, end_date):
         if end_date is not None and isinstance(end_date, int) or isinstance(end_date, float):
             end_date = '%s.%03dZ' % (datetime.fromtimestamp(int(end_date)).strftime('%Y-%m-%dT%H:%M:%S'),

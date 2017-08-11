@@ -1,0 +1,10 @@
+{
+  "params": {
+    "on": true
+  },
+  "target": {
+    "byUdi": [
+      "plug-udi"
+    ]
+  }
+}
