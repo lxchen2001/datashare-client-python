@@ -7,7 +7,7 @@ import json
 from orange_datashare.imported import OK, ACCEPTED
 from unittest import TestCase
 
-from orange_datashare.data import DataApi, StatsField
+from orange_datashare.data import DataApi, StatsField, BoundariesSearchOption
 
 from orange_datashare_test.abstract_test_case import AbstractTestCase
 from orange_datashare_test.fake_requests import mock_api_response, load_resource_file
@@ -106,3 +106,30 @@ class DataApiTest(TestCase, AbstractTestCase):
         self.assertEqual(9000, summary["lightDuration"])
         self.assertEqual(18000, summary["deepDuration"])
         self.assertEqual("/users/me/data/timeseries/me/sleep?filter={\"value\":{\"start\":\"2017-01-01T22:30:00Z\"}}", summary["links"]["timeseries"])
+
+
+    def test_get_boundaries(self):
+        self.client.get.return_value = mock_api_response('/api/v2/users/-/data/boundaries',
+                                                         OK,
+                                                         None,
+                                                         'data', 'boundaries',
+                                                         'GET_response.json')
+
+        boundaries = self.data.get_boundaries('-', search=BoundariesSearchOption.BOTH)
+        self.client.get.assert_called_with(self.client.get.return_value.url, params=dict(search='both'),
+                                           headers=self.DEFAULT_HEADERS)
+        self.assertIsNotNone(boundaries)
+        self.assertIsInstance(boundaries, list)
+        self.assertEqual(2, len(boundaries))
+
+        boundary1 = boundaries[0]
+        self.assertEqual("OnDemand:model-test-data-boundaries@sensor", boundary1["source"])
+        self.assertEqual(2, len(boundary1["streams"]))
+        self.assertEqual("/indoor/air/temperature", boundary1["streams"][0]["path"])
+        self.assertEqual("/indoor/air/humidity", boundary1["streams"][1]["path"])
+
+        boundary2 = boundaries[1]
+        self.assertEqual("OnDemand:model-test-data-boundaries@thermostat", boundary2["source"])
+        self.assertEqual(2, len(boundary2["streams"]))
+        self.assertEqual("/indoor/air/temperature", boundary2["streams"][0]["path"])
+        self.assertEqual("/indoor/thermostat/mode", boundary2["streams"][1]["path"])

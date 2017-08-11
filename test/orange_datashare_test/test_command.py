@@ -58,3 +58,14 @@ class CommandApiTest(TestCase, AbstractTestCase):
 
     def test_set_light_state_by_hex(self):
         self._test_light_state("#FF5500", 'PUT_hex_request.json')
+
+    def test_plug_state(self):
+        self.client.put.return_value = mock_api_response('/api/v2/users/-/commands/plug/state',
+                                                         ACCEPTED,
+                                                         None,
+                                                         'plug', 'state', 'PUT_response.json')
+        expected_request = json.loads(load_resource_file('plug', 'state', 'PUT_request.json'))
+        self.command.set_plug_state('-', ['plug-udi'], True)
+        self.client.put.assert_called_with(self.client.put.return_value.url, data=None, json=expected_request,
+                                           headers=self.DEFAULT_HEADERS)
+

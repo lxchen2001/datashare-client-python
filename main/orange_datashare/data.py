@@ -17,6 +17,10 @@ class StatsField(Enum):
     MAX = "max"
     ALL = "all"
 
+class BoundariesSearchOption(Enum):
+    LAST = "last"
+    FIRST = "first"
+    BOTH = "both"
 
 class DataApi(AbstractApi):
 
@@ -37,8 +41,15 @@ class DataApi(AbstractApi):
             params['fields']=','.join([field.value for field in fields])
         return self.client._get('/api/v2/users/%s/data/stats%s' % (user_id, stream), params=params)
 
-    def get_summaries(self, user_id, stream, **params):
-        return self.client._get('/api/v2/users/%s/data/summaries%s' % (user_id, stream), params=params)
+    def get_summaries(self, user_id, path, **params):
+        return self.client._get('/api/v2/users/%s/data/summaries%s' % (user_id, path), params=params)
+
+    def get_boundaries(self, user_id, search=None, paths=None, **params):
+        if search is not None:
+            params['search']=search.value
+        if paths is not None and len(paths) > 0:
+            params['paths']=','.join(paths)
+        return self.client._get('/api/v2/users/%s/data/boundaries' % (user_id), params=params)
 
 
 class DataApiV1(AbstractApi):
@@ -54,9 +65,12 @@ class DataApiV1(AbstractApi):
             expected_status=(ACCEPTED,)
         )
 
-    def get_stats(self, user_id, stream, stats_func=StatsField.ALL, **params):
+    def get_stats(self, user_id, stream, fields=None, **params):
         raise NotImplementedError()
 
-    def get_summaries(self, user_id, stream, **params):
+    def get_summaries(self, user_id, path, **params):
+        raise NotImplementedError()
+
+    def get_boundaries(self, user_id, search=None, paths=None, **params):
         raise NotImplementedError()
 
