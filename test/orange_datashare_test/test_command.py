@@ -53,8 +53,8 @@ class CommandApiTest(TestCase, AbstractTestCase):
     def test_set_light_state_by_rgb(self):
         self._test_light_state([1, 2, 3], 'PUT_rgb_request.json')
 
-    def test_set_light_state_by_hsl(self):
-        self._test_light_state([10.0, 0.5, 0.6], 'PUT_hsl_request.json')
+    def test_set_light_state_by_hsb(self):
+        self._test_light_state([10.0, 0.5, 0.6], 'PUT_hsb_request.json')
 
     def test_set_light_state_by_hex(self):
         self._test_light_state("#FF5500", 'PUT_hex_request.json')

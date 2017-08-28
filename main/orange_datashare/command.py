@@ -30,7 +30,7 @@ class CommandApi(AbstractApi):
                 if isinstance(color[0], int) and isinstance(color[1], int) and isinstance(color[2], int):
                     request["params"]["color"] = dict(rgb=color)
                 else:
-                    request["params"]["color"] = dict(hsl=color)
+                    request["params"]["color"] = dict(hsb=color)
         return self.client._check_response(
             self.client._put('/api/v2/users/%s/commands/light/state' % user_id,
                              json=request),
